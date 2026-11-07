@@ -68,9 +68,9 @@ def test_non_list_results_are_reported(report: dict[str, Any], field: str) -> No
     assert f"report {field} is not a list" in check_report(report)
 
 
-def test_null_readiness_results_do_not_crash(report: dict[str, Any]) -> None:
+def test_null_readiness_results_are_reported(report: dict[str, Any]) -> None:
     report["readiness"]["results"] = None
-    assert isinstance(check_report(report), list)
+    assert "report readiness.results is not a list" in check_report(report)
 
 
 def test_unknown_severity(report: dict[str, Any]) -> None:

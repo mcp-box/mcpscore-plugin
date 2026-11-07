@@ -296,7 +296,7 @@ def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[s
     for name, value in lists.items():
         if isinstance(value, list):
             results.extend(r for r in value if isinstance(r, dict))
-        elif value is not None:
+        else:
             errors.append(f"report {name} is not a list")
     for result in results:
         if result.get("severity") not in SEVERITIES:
