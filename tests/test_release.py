@@ -174,9 +174,9 @@ class TestTagAbsent:
             release.check_tag_absent("0.1.0")
 
 
-def check_run(name: str, conclusion: str | None = "success", when: str = "2") -> dict[str, Any]:
-    status = "completed" if conclusion else "in_progress"
-    return {"name": name, "status": status, "conclusion": conclusion, "started_at": when, "completed_at": when}
+def check_run(name: str, conclusion: str | None = "success", run_id: int = 10) -> dict[str, Any]:
+    status = "completed" if conclusion else "queued"
+    return {"id": run_id, "name": name, "status": status, "conclusion": conclusion}
 
 
 ALL_GREEN = [check_run(name) for name in sorted(release.REQUIRED_CHECKS)]
@@ -205,8 +205,20 @@ class TestCiGreen:
         release.check_ci_green("abc")
 
     def test_the_latest_run_of_a_check_counts(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        self.runs(monkeypatch, [check_run("check", "failure", when="1"), *ALL_GREEN])
+        self.runs(monkeypatch, [check_run("check", "failure", run_id=1), *ALL_GREEN])
         release.check_ci_green("abc")
+
+    def test_a_queued_rerun_is_not_green_yet(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        self.runs(monkeypatch, [*ALL_GREEN, check_run("check", None, run_id=11)])
+        with pytest.raises(SystemExit):
+            release.check_ci_green("abc")
+
+    def test_an_older_run_finishing_last_does_not_hide_a_newer_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        older_green = check_run("check", "success", run_id=5)
+        newer_red = check_run("check", "failure", run_id=11)
+        self.runs(monkeypatch, [newer_red, *[r for r in ALL_GREEN if r["name"] != "check"], older_green])
+        with pytest.raises(SystemExit):
+            release.check_ci_green("abc")
 
     def test_red_stops_the_release(self, monkeypatch: pytest.MonkeyPatch) -> None:
         self.runs(monkeypatch, [*ALL_GREEN, check_run("Analyze (python)", "failure")])
@@ -270,3 +282,17 @@ class TestMain:
     def test_yes_creates_the_release(self, preflight: list[str]) -> None:
         release.main(["--yes"])
         assert preflight == ["0.1.0"]
+
+    @pytest.mark.parametrize(
+        "second",
+        [("0.2.0", "abc123", "- First."), ("0.1.0", "def456", "- First."), ("0.1.0", "abc123", "- Other.")],
+    )
+    def test_a_change_during_the_prompt_creates_nothing(
+        self, preflight: list[str], monkeypatch: pytest.MonkeyPatch, second: tuple[str, str, str]
+    ) -> None:
+        answers = iter([("0.1.0", "abc123", "- First."), second])
+        monkeypatch.setattr(release, "preflight", lambda: next(answers))
+        monkeypatch.setattr("builtins.input", lambda _prompt: "y")
+        with pytest.raises(SystemExit):
+            release.main([])
+        assert preflight == []

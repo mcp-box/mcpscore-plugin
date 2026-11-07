@@ -174,14 +174,15 @@ def check_ci_green(sha: str) -> None:
         "api",
         f"repos/{REPO}/commits/{sha}/check-runs",
         "--jq",
-        "[.check_runs[] | {name, status, conclusion, started_at, completed_at}]",
+        "[.check_runs[] | {id, name, status, conclusion}]",
     )
+    # The newest run of each check is the one with the highest id: ids follow creation, queued runs included.
     latest: dict[str, dict[str, Any]] = {}
     for check in json.loads(raw):
         if check["name"] in REVIEW_BOT_CHECKS:
             continue
         seen = latest.get(check["name"])
-        if seen is None or _when(check) > _when(seen):
+        if seen is None or check["id"] > seen["id"]:
             latest[check["name"]] = check
     if not latest:
         fail("no CI check runs found for HEAD: has CI finished?")
@@ -193,10 +194,6 @@ def check_ci_green(sha: str) -> None:
         details = ", ".join(f"{c['name']}: {c['conclusion'] or c['status']}" for c in bad)
         fail(f"CI is not green for HEAD: {details}")
     ok(f"CI green for HEAD ({len(latest)} checks)")
-
-
-def _when(check: dict[str, Any]) -> str:
-    return check["completed_at"] or check["started_at"] or ""
 
 
 def _green(name: str) -> tuple[str, ...]:
@@ -269,8 +266,9 @@ def main(argv: list[str] | None = None) -> None:
     if not args.yes and not confirm(version):
         sys.exit(1)
 
-    # main may have moved while the prompt was open.
-    version, head, notes = preflight()
+    # main may have moved while the prompt was open: release only what was confirmed.
+    if preflight() != (version, head, notes):
+        fail("the version, HEAD or release notes changed while the prompt was open: run the release again")
     create_release(version, notes, head)
     print(
         f"\nhttps://github.com/{REPO}/releases/tag/{tag_name(version)}\n"
