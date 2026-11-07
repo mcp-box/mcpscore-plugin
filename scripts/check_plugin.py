@@ -313,31 +313,46 @@ def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[s
 
 
 def check_summary(report: dict[str, Any]) -> list[str]:
-    """The counts the skill quotes agree with the rules they count."""
+    """The counts the skill quotes agree with the failed rules in `results`."""
     summary = report.get("summary")
-    if not isinstance(summary, dict) or not isinstance(summary.get("failed"), int):
+    if not isinstance(summary, dict):
         return []
     errors: list[str] = []
-    main = report.get("results")
-    if isinstance(main, list):
-        failed_main = sum(1 for r in main if isinstance(r, dict) and r.get("passed") is False)
-        if summary["failed"] != failed_main:
-            errors.append(f"summary.failed is {summary['failed']}, but {failed_main} rules in results failed")
+    total = summary.get("failed")
+    if "failed" in summary and (not isinstance(total, int) or isinstance(total, bool)):
+        errors.append(f"summary.failed is {total!r}, not an integer")
+        total = None
     by_severity = summary.get("by_severity")
+    if "by_severity" in summary and not isinstance(by_severity, dict):
+        errors.append(f"summary.by_severity is {type(by_severity).__name__}, not an object")
+        by_severity = None
+    reported: dict[str, int] = {}
     if isinstance(by_severity, dict):
-        counts: dict[str, int] = {}
         for severity, entry in by_severity.items():
             failed = entry.get("failed") if isinstance(entry, dict) else None
             if severity not in SEVERITIES:
                 errors.append(f"summary.by_severity has unknown severity {severity!r}")
-            elif not isinstance(failed, int):
+            elif not isinstance(failed, int) or isinstance(failed, bool):
                 errors.append(f"summary.by_severity.{severity} has no failed count")
             else:
-                counts[severity] = failed
-        if len(counts) == len(by_severity) and sum(counts.values()) != summary["failed"]:
-            errors.append(
-                f"summary.by_severity failed counts add up to {sum(counts.values())}, not {summary['failed']}"
-            )
+                reported[severity] = failed
+
+    main = report.get("results")
+    if not isinstance(main, list):
+        return errors
+    failed_rules = [r for r in main if isinstance(r, dict) and r.get("passed") is False]
+    if isinstance(total, int) and total != len(failed_rules):
+        errors.append(f"summary.failed is {total}, but {len(failed_rules)} rules in results failed")
+    if isinstance(by_severity, dict):
+        for severity in sorted(SEVERITIES):
+            if severity in by_severity and severity not in reported:
+                continue
+            actual = sum(1 for r in failed_rules if r.get("severity") == severity)
+            claimed = reported.get(severity, 0)
+            if claimed != actual:
+                errors.append(
+                    f"summary.by_severity.{severity}.failed is {claimed}, but {actual} {severity} rules failed"
+                )
     return errors
 
 
