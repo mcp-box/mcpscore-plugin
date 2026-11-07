@@ -11,12 +11,12 @@ show the score before and after.
 
 ## Install
 
-| Agent | Install |
-|---|---|
-| Claude Code | `/plugin install mcpscore --marketplace mcp-box/mcpscore-plugin` |
-| Codex | `codex plugin marketplace add mcp-box/mcpscore-plugin`, then `codex plugin add mcpscore@mcpscore` |
-| Cursor | copy `plugins/mcpscore` to `~/.cursor/plugins/local/mcpscore`, then run **Developer: Reload Window** |
-| Any agent that reads Agent Skills | copy `plugins/mcpscore/skills/audit` to your agent's skills folder |
+| Agent                             | Install                                                                                              |
+|-----------------------------------|------------------------------------------------------------------------------------------------------|
+| Claude Code                       | `/plugin install mcpscore --marketplace mcp-box/mcpscore-plugin`                                     |
+| Codex                             | `codex plugin marketplace add mcp-box/mcpscore-plugin`, then `codex plugin add mcpscore@mcpscore`    |
+| Cursor                            | copy `plugins/mcpscore` to `~/.cursor/plugins/local/mcpscore`, then run **Developer: Reload Window** |
+| Any agent that reads Agent Skills | copy `plugins/mcpscore/skills/audit` to your agent's skills folder                                   |
 
 The skill runs the mcpscore CLI with [uv](https://docs.astral.sh/uv/)
 (`uvx mcpscore`), so uv must be on your `PATH`. pipx works too.
