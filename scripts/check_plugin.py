@@ -51,6 +51,8 @@ REPORT_FIELDS = (
     "spec.negotiated_version",
     "spec.era",
     "skipped_rules",
+    "summary.failed",
+    "summary.by_severity",
 )
 MARKETPLACE_FILES = (
     ".claude-plugin/marketplace.json",
@@ -303,6 +305,11 @@ def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[s
             errors.append(f"{result.get('rule_id')}: unknown severity {result.get('severity')!r}")
         if result.get("passed") is False and not result.get("suggested_fix"):
             errors.append(f"{result.get('rule_id')}: failed rule has no suggested_fix")
+    summary = report.get("summary")
+    if isinstance(summary, dict) and isinstance(summary.get("failed"), int):
+        failed_main = sum(1 for r in report.get("results") or [] if isinstance(r, dict) and r.get("passed") is False)
+        if summary["failed"] != failed_main:
+            errors.append(f"summary.failed is {summary['failed']}, but {failed_main} rules in results failed")
     score, max_score = report.get("score"), report.get("max_score")
     if isinstance(score, int) and isinstance(max_score, int) and not 0 <= score <= max_score:
         errors.append(f"score {score} is outside 0..{max_score}")

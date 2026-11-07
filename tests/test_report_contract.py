@@ -55,6 +55,7 @@ def test_clean_server_report_passes(report: dict[str, Any]) -> None:
     for result in [*report["results"], *report["readiness"]["results"]]:
         result["passed"] = True
         result.pop("suggested_fix", None)
+    report["summary"]["failed"] = 0
     assert check_report(report) == []
 
 
@@ -71,6 +72,17 @@ def test_non_list_results_are_reported(report: dict[str, Any], field: str) -> No
 def test_null_readiness_results_are_reported(report: dict[str, Any]) -> None:
     report["readiness"]["results"] = None
     assert "report readiness.results is not a list" in check_report(report)
+
+
+def test_summary_failed_counts_results_only(report: dict[str, Any]) -> None:
+    failed_main = sum(1 for r in report["results"] if not r["passed"])
+    assert report["summary"]["failed"] == failed_main
+    assert any(not r["passed"] for r in report["readiness"]["results"])
+
+
+def test_summary_failed_must_match_results(report: dict[str, Any]) -> None:
+    report["summary"]["failed"] += 1
+    assert any(e.startswith("summary.failed is ") for e in check_report(report))
 
 
 def test_unknown_severity(report: dict[str, Any]) -> None:

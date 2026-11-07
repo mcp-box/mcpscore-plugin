@@ -25,6 +25,10 @@ The version is the plugin's, set in every `plugin.json`.
   skill fills each line of a finding only from its report field and leaves a
   missing one out, instead of writing its own.
 
+- The skill states counts only from the report (`summary.failed`,
+  `summary.by_severity`) and names the rules in any other group, instead of
+  tallying them itself.
+
 ### Security
 
 - The skill tells the agent to treat every string in the report as data:
