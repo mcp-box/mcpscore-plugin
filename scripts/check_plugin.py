@@ -46,7 +46,7 @@ REPORT_FIELDS = (
     "results[].suggested_fix",
     "results[].details.basis",
     "readiness.counted_in_main",
-    "readiness.results[].rule_id",
+    "readiness.results",
     "readiness.results[].suggested_fix",
     "spec.negotiated_version",
     "spec.era",
@@ -57,6 +57,8 @@ MARKETPLACE_FILES = (
     ".agents/plugins/marketplace.json",
     ".cursor-plugin/marketplace.json",
 )
+# Present only on failed rules, so a clean server's report has none; checked per failed rule instead.
+FAILED_RULE_FIELDS = {"results[].suggested_fix", "readiness.results[].suggested_fix"}
 SEVERITIES = {"CRITICAL", "HIGH", "MEDIUM", "LOW"}
 
 
@@ -278,14 +280,24 @@ def values_at(data: Any, path: str) -> list[Any]:
 
 def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[str]:
     """Problems with a `mcpscore --json` report, judged by what the skill reads from it."""
-    errors = [f"report has no {field}" for field in fields if not values_at(report, field)]
+    errors = [
+        f"report has no {field}" for field in fields if field not in FAILED_RULE_FIELDS and not values_at(report, field)
+    ]
     if not isinstance(report, dict):
         return errors
     if report.get("schema_version") != 1:
         errors.append(f"report schema_version is {report.get('schema_version')!r}; the skill reads version 1")
     readiness = report.get("readiness")
-    readiness_results = readiness.get("results", []) if isinstance(readiness, dict) else []
-    results = [r for r in [*report.get("results", []), *readiness_results] if isinstance(r, dict)]
+    lists = {
+        "results": report.get("results"),
+        "readiness.results": readiness.get("results") if isinstance(readiness, dict) else None,
+    }
+    results: list[dict[str, Any]] = []
+    for name, value in lists.items():
+        if isinstance(value, list):
+            results.extend(r for r in value if isinstance(r, dict))
+        elif value is not None:
+            errors.append(f"report {name} is not a list")
     for result in results:
         if result.get("severity") not in SEVERITIES:
             errors.append(f"{result.get('rule_id')}: unknown severity {result.get('severity')!r}")

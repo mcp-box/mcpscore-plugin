@@ -51,6 +51,28 @@ def test_failed_readiness_rule_without_a_fix(report: dict[str, Any]) -> None:
     assert f"{failed['rule_id']}: failed rule has no suggested_fix" in check_report(report)
 
 
+def test_clean_server_report_passes(report: dict[str, Any]) -> None:
+    for result in [*report["results"], *report["readiness"]["results"]]:
+        result["passed"] = True
+        result.pop("suggested_fix", None)
+    assert check_report(report) == []
+
+
+@pytest.mark.parametrize("field", ["results", "readiness.results"])
+def test_non_list_results_are_reported(report: dict[str, Any], field: str) -> None:
+    *parents, leaf = field.split(".")
+    node = report
+    for parent in parents:
+        node = node[parent]
+    node[leaf] = "oops"
+    assert f"report {field} is not a list" in check_report(report)
+
+
+def test_null_readiness_results_do_not_crash(report: dict[str, Any]) -> None:
+    report["readiness"]["results"] = None
+    assert isinstance(check_report(report), list)
+
+
 def test_unknown_severity(report: dict[str, Any]) -> None:
     report["results"][0]["severity"] = "INFO"
     assert any("unknown severity 'INFO'" in e for e in check_report(report))
