@@ -168,8 +168,16 @@ class TestTagAbsent:
         with pytest.raises(SystemExit):
             release.check_tag_absent("0.1.0")
 
-    def test_another_error_stops_the_release(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(release.subprocess, "run", lambda *a, **k: Completed(1, "HTTP 500"))
+    @pytest.mark.parametrize(
+        "stderr",
+        [
+            "gh: Server Error (HTTP 500)",
+            "Get https://api.github.com/repos/x/git/ref/tags/mcpscore--v0.1.404: dial tcp: i/o timeout",
+            "Not Found",
+        ],
+    )
+    def test_anything_but_an_http_404_stops_the_release(self, monkeypatch: pytest.MonkeyPatch, stderr: str) -> None:
+        monkeypatch.setattr(release.subprocess, "run", lambda *a, **k: Completed(1, stderr))
         with pytest.raises(SystemExit):
             release.check_tag_absent("0.1.0")
 
@@ -184,7 +192,25 @@ ALL_GREEN = [check_run(name) for name in sorted(release.REQUIRED_CHECKS)]
 
 class TestCiGreen:
     def runs(self, monkeypatch: pytest.MonkeyPatch, runs: list[dict[str, Any]]) -> None:
-        monkeypatch.setattr(release, "run", lambda *a: json.dumps(runs))
+        monkeypatch.setattr(release, "run", lambda *a: "\n".join(json.dumps(r) for r in runs))
+
+    def test_reads_every_page(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        calls: list[tuple[str, ...]] = []
+
+        def run(*args: str) -> str:
+            calls.append(args)
+            return "\n".join(json.dumps(r) for r in ALL_GREEN)
+
+        monkeypatch.setattr(release, "run", run)
+        release.check_ci_green("abc")
+        assert "--paginate" in calls[0]
+
+    def test_a_failure_on_a_later_page_stops_the_release(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        page_one = "\n".join(json.dumps(r) for r in ALL_GREEN)
+        page_two = json.dumps(check_run("Analyze (python)", "failure"))
+        monkeypatch.setattr(release, "run", lambda *a: f"{page_one}\n{page_two}\n")
+        with pytest.raises(SystemExit):
+            release.check_ci_green("abc")
 
     def test_green(self, monkeypatch: pytest.MonkeyPatch) -> None:
         self.runs(monkeypatch, [*ALL_GREEN, check_run("canary", "skipped"), check_run("Analyze (python)")])

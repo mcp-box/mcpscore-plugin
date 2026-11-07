@@ -162,9 +162,10 @@ def check_tag_absent(version: str) -> None:
     )
     if result.returncode == 0:
         fail(f"tag {tag} already exists on the remote: bump the version in all three plugin.json files")
-    output = (result.stderr or "") + (result.stdout or "")
-    if "404" not in output and "Not Found" not in output:
-        fail(f"could not verify tag {tag} (gh api error, not a 404):\n  {output.strip()}")
+    # gh ends its error line with the HTTP status, e.g. "gh: Not Found (HTTP 404)".
+    if "(HTTP 404)" not in (result.stderr or ""):
+        output = ((result.stderr or "") + (result.stdout or "")).strip()
+        fail(f"could not verify tag {tag} (gh api error, not an HTTP 404):\n  {output}")
     ok(f"tag {tag} is unused")
 
 
@@ -172,13 +173,15 @@ def check_ci_green(sha: str) -> None:
     raw = run(
         "gh",
         "api",
-        f"repos/{REPO}/commits/{sha}/check-runs",
+        "--paginate",
+        f"repos/{REPO}/commits/{sha}/check-runs?per_page=100",
         "--jq",
-        "[.check_runs[] | {id, name, status, conclusion}]",
+        ".check_runs[] | {id, name, status, conclusion}",
     )
+    # One JSON object per line, across every page.
     # The newest run of each check is the one with the highest id: ids follow creation, queued runs included.
     latest: dict[str, dict[str, Any]] = {}
-    for check in json.loads(raw):
+    for check in (json.loads(line) for line in raw.splitlines() if line.strip()):
         if check["name"] in REVIEW_BOT_CHECKS:
             continue
         seen = latest.get(check["name"])
