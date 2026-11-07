@@ -305,14 +305,39 @@ def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[s
             errors.append(f"{result.get('rule_id')}: unknown severity {result.get('severity')!r}")
         if result.get("passed") is False and not result.get("suggested_fix"):
             errors.append(f"{result.get('rule_id')}: failed rule has no suggested_fix")
-    summary = report.get("summary")
-    if isinstance(summary, dict) and isinstance(summary.get("failed"), int):
-        failed_main = sum(1 for r in report.get("results") or [] if isinstance(r, dict) and r.get("passed") is False)
-        if summary["failed"] != failed_main:
-            errors.append(f"summary.failed is {summary['failed']}, but {failed_main} rules in results failed")
+    errors.extend(check_summary(report))
     score, max_score = report.get("score"), report.get("max_score")
     if isinstance(score, int) and isinstance(max_score, int) and not 0 <= score <= max_score:
         errors.append(f"score {score} is outside 0..{max_score}")
+    return errors
+
+
+def check_summary(report: dict[str, Any]) -> list[str]:
+    """The counts the skill quotes agree with the rules they count."""
+    summary = report.get("summary")
+    if not isinstance(summary, dict) or not isinstance(summary.get("failed"), int):
+        return []
+    errors: list[str] = []
+    main = report.get("results")
+    if isinstance(main, list):
+        failed_main = sum(1 for r in main if isinstance(r, dict) and r.get("passed") is False)
+        if summary["failed"] != failed_main:
+            errors.append(f"summary.failed is {summary['failed']}, but {failed_main} rules in results failed")
+    by_severity = summary.get("by_severity")
+    if isinstance(by_severity, dict):
+        counts: dict[str, int] = {}
+        for severity, entry in by_severity.items():
+            failed = entry.get("failed") if isinstance(entry, dict) else None
+            if severity not in SEVERITIES:
+                errors.append(f"summary.by_severity has unknown severity {severity!r}")
+            elif not isinstance(failed, int):
+                errors.append(f"summary.by_severity.{severity} has no failed count")
+            else:
+                counts[severity] = failed
+        if len(counts) == len(by_severity) and sum(counts.values()) != summary["failed"]:
+            errors.append(
+                f"summary.by_severity failed counts add up to {sum(counts.values())}, not {summary['failed']}"
+            )
     return errors
 
 

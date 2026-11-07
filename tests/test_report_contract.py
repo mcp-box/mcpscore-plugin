@@ -56,6 +56,8 @@ def test_clean_server_report_passes(report: dict[str, Any]) -> None:
         result["passed"] = True
         result.pop("suggested_fix", None)
     report["summary"]["failed"] = 0
+    for counts in report["summary"]["by_severity"].values():
+        counts["failed"] = 0
     assert check_report(report) == []
 
 
@@ -83,6 +85,26 @@ def test_summary_failed_counts_results_only(report: dict[str, Any]) -> None:
 def test_summary_failed_must_match_results(report: dict[str, Any]) -> None:
     report["summary"]["failed"] += 1
     assert any(e.startswith("summary.failed is ") for e in check_report(report))
+
+
+def test_severity_failed_count_must_be_present(report: dict[str, Any]) -> None:
+    del report["summary"]["by_severity"]["LOW"]["failed"]
+    assert "summary.by_severity.LOW has no failed count" in check_report(report)
+
+
+def test_severity_failed_counts_must_add_up(report: dict[str, Any]) -> None:
+    report["summary"]["by_severity"]["LOW"]["failed"] += 1
+    assert any("failed counts add up to" in e for e in check_report(report))
+
+
+def test_unknown_summary_severity(report: dict[str, Any]) -> None:
+    report["summary"]["by_severity"]["INFO"] = {"failed": 0}
+    assert "summary.by_severity has unknown severity 'INFO'" in check_report(report)
+
+
+def test_non_list_results_with_a_summary_do_not_crash(report: dict[str, Any]) -> None:
+    report["results"] = 1
+    assert "report results is not a list" in check_report(report)
 
 
 def test_unknown_severity(report: dict[str, Any]) -> None:
