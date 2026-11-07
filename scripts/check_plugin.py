@@ -46,7 +46,8 @@ REPORT_FIELDS = (
     "results[].suggested_fix",
     "results[].details.basis",
     "readiness.counted_in_main",
-    "readiness.results",
+    "readiness.results[].rule_id",
+    "readiness.results[].suggested_fix",
     "spec.negotiated_version",
     "spec.era",
     "skipped_rules",
@@ -282,7 +283,9 @@ def check_report(report: Any, fields: tuple[str, ...] = REPORT_FIELDS) -> list[s
         return errors
     if report.get("schema_version") != 1:
         errors.append(f"report schema_version is {report.get('schema_version')!r}; the skill reads version 1")
-    results = [r for r in report.get("results", []) if isinstance(r, dict)]
+    readiness = report.get("readiness")
+    readiness_results = readiness.get("results", []) if isinstance(readiness, dict) else []
+    results = [r for r in [*report.get("results", []), *readiness_results] if isinstance(r, dict)]
     for result in results:
         if result.get("severity") not in SEVERITIES:
             errors.append(f"{result.get('rule_id')}: unknown severity {result.get('severity')!r}")

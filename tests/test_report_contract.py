@@ -45,6 +45,12 @@ def test_failed_rule_without_a_fix(report: dict[str, Any]) -> None:
     assert f"{failed['rule_id']}: failed rule has no suggested_fix" in check_report(report)
 
 
+def test_failed_readiness_rule_without_a_fix(report: dict[str, Any]) -> None:
+    failed = next(r for r in report["readiness"]["results"] if not r["passed"])
+    del failed["suggested_fix"]
+    assert f"{failed['rule_id']}: failed rule has no suggested_fix" in check_report(report)
+
+
 def test_unknown_severity(report: dict[str, Any]) -> None:
     report["results"][0]["severity"] = "INFO"
     assert any("unknown severity 'INFO'" in e for e in check_report(report))

@@ -83,7 +83,7 @@ file. Writing a file may need the user's approval.
 | `results[]` | One entry per rule that ran: `rule_id`, `rule_name`, `severity`, `passed`, `message`, `suggested_fix`, `details`. |
 | `severity` | `CRITICAL` (5 points), `HIGH` (3), `MEDIUM` (2), `LOW` (1). |
 | `details.basis` | The requirement the rule checks, with its spec section. Other `details` keys carry evidence, such as JSON pointers to the affected field. |
-| `readiness` | Checks for the next MCP revision. When `readiness.counted_in_main` is `true`, its failures count in the score: list them with the rest. When `false`, they are informative: mention them separately, never as lost points. |
+| `readiness` | Checks for the next MCP revision. Each entry in `readiness.results[]` has the same fields as `results[]`, `suggested_fix` included. When `readiness.counted_in_main` is `true`, its failures count in the score: list them with the rest. When `false`, they are informative: mention them separately, never as lost points. |
 | `spec.negotiated_version`, `spec.era` | The protocol version the server negotiated, and whether it serves the legacy lifecycle, the modern one, or both. |
 | `skipped_rules` | Rules that do not apply to this server. Never report them as failures. |
 
@@ -105,10 +105,15 @@ Requirement: Transports §Security Warning ...
 ```
 
 `Observed` is the `message` without its leading ❌ mark, `Fix` is
-`suggested_fix`, and `Requirement` is `details.basis`.
+`suggested_fix`, and `Requirement` is `details.basis`. Fill each line only from
+its field, for `results` and `readiness.results` alike. When a field is
+missing, leave its line out; never write your own text in its place. If the
+report was saved to a file, look up every failed rule in both lists before you
+write a finding.
 
 - Present as an mcpscore finding only what the report contains. Notes from your
   own reading of the code are welcome when you label them as yours.
+- Advice of your own (what to fix first, say) never contradicts a `Fix` line.
 - A message that says "optional quality recommendation" is optional: say so.
 - No failed rules: say the server passed every rule that applies, and stop.
   Don't invent work.

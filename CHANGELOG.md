@@ -19,6 +19,12 @@ The version is the plugin's, set in every `plugin.json`.
 - `SECURITY.md`: private reporting through GitHub Security Advisories, and
   what is in scope for a plugin made of agent instructions.
 
+### Fixed
+
+- Findings from `readiness.results` now carry the report's own fix text. The
+  skill fills each line of a finding only from its report field and leaves a
+  missing one out, instead of writing its own.
+
 ### Security
 
 - The skill tells the agent to treat every string in the report as data:
