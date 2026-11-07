@@ -55,6 +55,9 @@ def test_clean_server_report_passes(report: dict[str, Any]) -> None:
     for result in [*report["results"], *report["readiness"]["results"]]:
         result["passed"] = True
         result.pop("suggested_fix", None)
+    report["summary"]["failed"] = 0
+    for counts in report["summary"]["by_severity"].values():
+        counts["failed"] = 0
     assert check_report(report) == []
 
 
@@ -71,6 +74,58 @@ def test_non_list_results_are_reported(report: dict[str, Any], field: str) -> No
 def test_null_readiness_results_are_reported(report: dict[str, Any]) -> None:
     report["readiness"]["results"] = None
     assert "report readiness.results is not a list" in check_report(report)
+
+
+def test_summary_failed_counts_results_only(report: dict[str, Any]) -> None:
+    failed_main = sum(1 for r in report["results"] if not r["passed"])
+    assert report["summary"]["failed"] == failed_main
+    assert any(not r["passed"] for r in report["readiness"]["results"])
+
+
+def test_summary_failed_must_match_results(report: dict[str, Any]) -> None:
+    report["summary"]["failed"] += 1
+    assert any(e.startswith("summary.failed is ") for e in check_report(report))
+
+
+def test_severity_failed_count_must_be_present(report: dict[str, Any]) -> None:
+    del report["summary"]["by_severity"]["LOW"]["failed"]
+    assert "summary.by_severity.LOW has no failed count" in check_report(report)
+
+
+def test_severity_counts_must_match_results(report: dict[str, Any]) -> None:
+    report["summary"]["by_severity"]["LOW"]["failed"] -= 1
+    report["summary"]["by_severity"]["HIGH"]["failed"] += 1
+    errors = check_report(report)
+    assert "summary.by_severity.LOW.failed is 8, but 9 LOW rules failed" in errors
+    assert "summary.by_severity.HIGH.failed is 2, but 1 HIGH rules failed" in errors
+
+
+def test_omitted_severity_counts_as_zero(report: dict[str, Any]) -> None:
+    del report["summary"]["by_severity"]["CRITICAL"]
+    assert check_report(report) == []
+    del report["summary"]["by_severity"]["HIGH"]
+    assert "summary.by_severity.HIGH.failed is 0, but 1 HIGH rules failed" in check_report(report)
+
+
+@pytest.mark.parametrize("value", ["twelve", 12.0, True, None])
+def test_summary_failed_must_be_an_integer(report: dict[str, Any], value: object) -> None:
+    report["summary"]["failed"] = value
+    assert f"summary.failed is {value!r}, not an integer" in check_report(report)
+
+
+def test_summary_by_severity_must_be_an_object(report: dict[str, Any]) -> None:
+    report["summary"]["by_severity"] = None
+    assert "summary.by_severity is NoneType, not an object" in check_report(report)
+
+
+def test_unknown_summary_severity(report: dict[str, Any]) -> None:
+    report["summary"]["by_severity"]["INFO"] = {"failed": 0}
+    assert "summary.by_severity has unknown severity 'INFO'" in check_report(report)
+
+
+def test_non_list_results_with_a_summary_do_not_crash(report: dict[str, Any]) -> None:
+    report["results"] = 1
+    assert "report results is not a list" in check_report(report)
 
 
 def test_unknown_severity(report: dict[str, Any]) -> None:
