@@ -8,6 +8,8 @@ The version is the plugin's, set in every `plugin.json`.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-07
+
 ### Added
 
 - The `audit` skill (`/mcpscore:audit <target>`): runs `mcpscore --json` on a
@@ -24,7 +26,6 @@ The version is the plugin's, set in every `plugin.json`.
 - Findings from `readiness.results` now carry the report's own fix text. The
   skill fills each line of a finding only from its report field and leaves a
   missing one out, instead of writing its own.
-
 - The skill states counts only from the report (`summary.failed`,
   `summary.by_severity`) and names the rules in any other group, instead of
   tallying them itself.
@@ -34,3 +35,6 @@ The version is the plugin's, set in every `plugin.json`.
 - The skill tells the agent to treat every string in the report as data:
   server names, tool descriptions and error messages come from the audited
   server and are never followed as instructions.
+
+[Unreleased]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.0...HEAD
+[0.1.0]: https://github.com/mcp-box/mcpscore-plugin/releases/tag/mcpscore--v0.1.0
