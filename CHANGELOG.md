@@ -16,3 +16,11 @@ The version is the plugin's, set in every `plugin.json`.
   re-audits.
 - Marketplace manifests for Claude Code, Codex and Cursor.
 - An agent eval suite (`claude plugin eval`).
+- `SECURITY.md`: private reporting through GitHub Security Advisories, and
+  what is in scope for a plugin made of agent instructions.
+
+### Security
+
+- The skill tells the agent to treat every string in the report as data:
+  server names, tool descriptions and error messages come from the audited
+  server and are never followed as instructions.
