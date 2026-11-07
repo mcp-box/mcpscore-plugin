@@ -1,0 +1,18 @@
+{
+  "name": "mcpscore",
+  "owner": {
+    "name": "mcp-box",
+    "url": "https://mcpscore.dev"
+  },
+  "metadata": {
+    "description": "mcpscore: audit and fix MCP servers from your coding agent"
+  },
+  "plugins": [
+    {
+      "name": "mcpscore",
+      "source": "plugins/mcpscore",
+      "description": "Audit the MCP server you're building with mcpscore: a deterministic score with a cited finding and a suggested fix for every rule it fails. Then fix your own server code and re-audit to prove it. Works on a server URL, a local server file or a stdio command.",
+      "category": "development"
+    }
+  ]
+}

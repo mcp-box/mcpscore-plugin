@@ -1,0 +1,1716 @@
+{
+  "schema_version": 1,
+  "mcpscore_version": "1.31.1",
+  "generated_at": "2026-11-07T15:12:07.710657+00:00",
+  "target": "https://mcp.deepwiki.com/mcp",
+  "transport": "streamable-http",
+  "score": 153,
+  "max_score": 171,
+  "authenticated": false,
+  "partial": false,
+  "partial_reason": null,
+  "incomplete_listings": [],
+  "listing_errors": {},
+  "server_info": {
+    "name": "DeepWiki",
+    "version": "4.0.2"
+  },
+  "package": null,
+  "skills": null,
+  "summary": {
+    "total": 53,
+    "passed": 41,
+    "failed": 12,
+    "skipped": 76,
+    "by_severity": {
+      "CRITICAL": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "HIGH": {
+        "total": 16,
+        "passed": 15,
+        "failed": 1
+      },
+      "MEDIUM": {
+        "total": 9,
+        "passed": 7,
+        "failed": 2
+      },
+      "LOW": {
+        "total": 20,
+        "passed": 11,
+        "failed": 9
+      }
+    }
+  },
+  "results": [
+    {
+      "rule_id": "protocol_version_allowed",
+      "rule_name": "MCP Protocol Version - Allowed Versions",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Protocol version \"2025-11-25\" is one of the allowed versions.",
+      "details": {
+        "version": "2025-11-25",
+        "allowed_versions": [
+          "2024-11-05",
+          "2025-03-26",
+          "2025-06-18",
+          "2025-11-25",
+          "2026-07-28"
+        ],
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Version Negotiation (server MUST respond with a version it supports)"
+      }
+    },
+    {
+      "rule_id": "protocol_version_not_deprecated",
+      "rule_name": "MCP Protocol Version - Deprecated Version",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Protocol version \"2025-11-25\" is not deprecated.",
+      "details": {
+        "version": "2025-11-25",
+        "deprecated_versions": [],
+        "basis": "MCP Versioning \u00a7Revisions (draft/current/final status)"
+      }
+    },
+    {
+      "rule_id": "protocol_version_latest",
+      "rule_name": "MCP Protocol Version - Latest Version",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 Server supports the latest protocol version '2026-07-28' via the stateless lifecycle (the handshake negotiated \"2025-11-25\", on its legacy path).",
+      "details": {
+        "version": "2025-11-25",
+        "latest_version": "2026-07-28",
+        "modern_lifecycle_support": true,
+        "basis": "MCP 2026-07-28 Basic \u00a7Lifecycle and MCP 2025-11-25 Lifecycle \u00a7Version Negotiation (use the latest supported revision)"
+      }
+    },
+    {
+      "rule_id": "protocol_version_supported_versions_include_negotiated",
+      "rule_name": "MCP Protocol Version - Supported Versions Include Negotiated",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c server/discover.supportedVersions \"2026-07-28\" omits legacy version \"2025-11-25\".",
+      "details": {
+        "session_protocol_version": "2025-11-25",
+        "supported_versions": [
+          "2026-07-28"
+        ],
+        "basis": "MCP 2026-07-28 Server \u00a7Discovery (DiscoverResult.supportedVersions: protocol versions the server supports) and Basic \u00a7Versioning (the UnsupportedProtocolVersionError example lists legacy revisions in `supported`)"
+      },
+      "suggested_fix": "Include the observed legacy revision in server/discover.supportedVersions while it remains supported, or disable the legacy lifecycle if intentionally retired. Preserve access for older clients you still support."
+    },
+    {
+      "rule_id": "server_name_present",
+      "rule_name": "Server Info - Name Present",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Server name is present: \"DeepWiki\".",
+      "details": {
+        "server_name": "DeepWiki",
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (serverInfo.name)"
+      }
+    },
+    {
+      "rule_id": "server_version_present",
+      "rule_name": "Server Info - Version Present",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Server version is present: \"4.0.2\" (format not checked).",
+      "details": {
+        "server_version": "4.0.2",
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (serverInfo.version)"
+      }
+    },
+    {
+      "rule_id": "server_title_present",
+      "rule_name": "Server Info - Title Present",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": false,
+      "message": "\u274c Server title is not present in server info. This is an optional quality recommendation. First affected field: server \"/serverInfo/title\".",
+      "details": {
+        "server_title": null,
+        "issues": [
+          {
+            "entity_kind": "server",
+            "reason": "missing_metadata",
+            "expected": "a display title",
+            "path": "/serverInfo/title"
+          }
+        ],
+        "issues_total": 1,
+        "issues_omitted": 0,
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (serverInfo.title)"
+      },
+      "suggested_fix": "Add a human-readable serverInfo.title so clients can display a recognizable server name."
+    },
+    {
+      "rule_id": "server_instructions_present",
+      "rule_name": "Server Info - Instructions Present",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 Server provides instructions.",
+      "details": {
+        "has_instructions": true,
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (instructions)"
+      }
+    },
+    {
+      "rule_id": "server_websiteurl_present",
+      "rule_name": "Server Info - Website URL Present",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c Server websiteUrl is not present in server info. This is an optional quality recommendation. First affected field: server \"/serverInfo/websiteUrl\".",
+      "details": {
+        "website_url": null,
+        "issues": [
+          {
+            "entity_kind": "server",
+            "reason": "missing_metadata",
+            "expected": "a project or documentation URL",
+            "path": "/serverInfo/websiteUrl"
+          }
+        ],
+        "issues_total": 1,
+        "issues_omitted": 0,
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (serverInfo.websiteUrl; 2025-11-25 field)"
+      },
+      "suggested_fix": "Add serverInfo.websiteUrl pointing to the server's documentation or project homepage."
+    },
+    {
+      "rule_id": "server_icons_present",
+      "rule_name": "Server Info - Icons Present and Valid",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c serverInfo.icons is absent or empty. This is an optional quality recommendation. First affected field: server \"/serverInfo/icons\".",
+      "details": {
+        "icon_count": 0,
+        "invalid_srcs": [],
+        "issues": [
+          {
+            "entity_kind": "server",
+            "reason": "missing_icons",
+            "expected": "an optional display icon",
+            "path": "/serverInfo/icons"
+          }
+        ],
+        "issues_total": 1,
+        "issues_omitted": 0,
+        "basis": "MCP 2025-11-25 Lifecycle \u00a7Initialization (serverInfo.icons; 2025-11-25 field)"
+      },
+      "suggested_fix": "Consider adding a serverInfo.icons entry for recognition in clients, using an HTTPS image URL or a base64 image data URI."
+    },
+    {
+      "rule_id": "server_exposes_primitive",
+      "rule_name": "Server Info - Exposes at least one tool, resource, prompt or skill",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 Server exposes at least one primitive (tools: 3).",
+      "details": {
+        "exposed": {
+          "tools": 3,
+          "resources": 0,
+          "resource_templates": 0,
+          "prompts": 0,
+          "skills": null
+        },
+        "checked": [
+          "tools",
+          "resources",
+          "resource_templates",
+          "prompts"
+        ],
+        "basis": "MCP 2025-11-25 Server Features \u00a7Overview (tools, resources and prompts are each optional); SEP-2640 Skills extension (skills/list)"
+      }
+    },
+    {
+      "rule_id": "capability_tools_present",
+      "rule_name": "Capabilities - Tools Declared Consistently",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Declares the tools capability and serves 3 via tools/list",
+      "details": {
+        "capability_tools": "listChanged=True",
+        "declared": true,
+        "served": true,
+        "basis": "MCP 2025-11-25 Tools \u00a7Capabilities (servers supporting tools MUST declare the capability)"
+      }
+    },
+    {
+      "rule_id": "capability_tools_list_changed",
+      "rule_name": "Capabilities - Tools listChanged Declared",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 capabilities.tools.listChanged is declared as true (notifications not tested).",
+      "details": {
+        "capability_tools": "listChanged=True",
+        "basis": "mcpscore recommendation; MCP 2025-11-25 Tools \u00a7Capabilities defines listChanged as optional"
+      }
+    },
+    {
+      "rule_id": "capability_prompts_present",
+      "rule_name": "Capabilities - Prompts Declared Consistently",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Declares the prompts capability and serves 0 via prompts/list",
+      "details": {
+        "capability_prompts": "listChanged=True",
+        "declared": true,
+        "served": true,
+        "basis": "MCP 2025-11-25 Prompts \u00a7Capabilities (servers supporting prompts MUST declare the capability)"
+      }
+    },
+    {
+      "rule_id": "capability_prompts_list_changed",
+      "rule_name": "Capabilities - Prompts listChanged Declared",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 capabilities.prompts.listChanged is declared as true (notifications not tested).",
+      "details": {
+        "capability_prompts": "listChanged=True",
+        "basis": "mcpscore recommendation; MCP 2025-11-25 Prompts \u00a7Capabilities defines listChanged as optional"
+      }
+    },
+    {
+      "rule_id": "capability_resources_present",
+      "rule_name": "Capabilities - Resources Declared Consistently",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Declares the resources capability and serves 0 via resources/list",
+      "details": {
+        "capability_resources": "subscribe=False listChanged=True",
+        "declared": true,
+        "served": true,
+        "basis": "MCP 2025-11-25 Resources \u00a7Capabilities (servers supporting resources MUST declare the capability)"
+      }
+    },
+    {
+      "rule_id": "capability_resources_list_changed",
+      "rule_name": "Capabilities - Resources listChanged Declared",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 capabilities.resources.listChanged is declared as true (notifications not tested).",
+      "details": {
+        "capability_resources": "subscribe=False listChanged=True",
+        "basis": "mcpscore recommendation; MCP 2025-11-25 Resources \u00a7Capabilities defines listChanged as optional"
+      }
+    },
+    {
+      "rule_id": "security_tls_enabled",
+      "rule_name": "HTTPS/TLS Enabled",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 Server uses HTTPS with valid TLS (TLSv1.3).",
+      "details": {
+        "url": "https://mcp.deepwiki.com/mcp",
+        "tls_version": "TLSv1.3",
+        "basis": "MCP 2025-11-25 Transports \u00a7Streamable HTTP Security Warning; TLS transport-security best practice"
+      }
+    },
+    {
+      "rule_id": "security_malformed_request_handling",
+      "rule_name": "Malformed Request Handling",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 Malformed JSON returns JSON-RPC -32700 (Parse error) with a null or absent ID.",
+      "details": {
+        "spec": "https://www.jsonrpc.org/specification#response_object",
+        "http_status": 400,
+        "error_code": -32700,
+        "response_id_absent_or_null": true,
+        "control_http_status": 200,
+        "basis": "JSON-RPC 2.0 \u00a7Response Object / \u00a7Error Object: -32700 Parse error (enforced). Strict JSON-RPC requires the id present and null; a null OR absent id is accepted as a calibrated interoperability allowance."
+      }
+    },
+    {
+      "rule_id": "security_error_data_leak",
+      "rule_name": "No Sensitive Data in Error Messages",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 No sensitive-data patterns were detected in the sampled error response.",
+      "details": {
+        "error_response_length": 75,
+        "basis": "MCP 2025-11-25 Tools \u00a7Security Considerations (sanitize outputs); error-hygiene best practice"
+      }
+    },
+    {
+      "rule_id": "security_origin_validation",
+      "rule_name": "Origin Header Validated",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": false,
+      "message": "\u274c Streamable HTTP does not reject an invalid foreign Origin with HTTP 403, risking DNS rebinding. Observed HTTP status: 200.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#security-&-endpoint",
+        "http_status": 200,
+        "control_http_status": 200,
+        "control_shape": "modern",
+        "expected": {
+          "http_status": 403
+        },
+        "basis": "Transports \u00a7Security Warning (2025-03-26, 2025-06-18, 2025-11-25) and Streamable HTTP \u00a7Security & Endpoint (2026-07-28): servers MUST validate the Origin header on all incoming connections to prevent DNS rebinding; from 2025-11-25 an invalid Origin MUST be rejected with HTTP 403"
+      },
+      "suggested_fix": "Validate supplied Origin headers against the origins allowed for this endpoint. Return HTTP 403 for invalid origins; do not allow every origin to satisfy browser requests."
+    },
+    {
+      "rule_id": "catalog_hidden_unicode",
+      "rule_name": "No Hidden Unicode in Catalog Text",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Catalog text contains no hidden Unicode characters.",
+      "details": {
+        "strings_with_findings": 0,
+        "matched": {},
+        "basis": "OWASP MCP Top 10 (beta) MCP03:2025 Tool Poisoning and MCP06:2025 Prompt Injection via Contextual Payloads; MCP 2025-11-25 \u00a7Security and Trust & Safety (Tool Safety: tool descriptions are untrusted); Unicode UTS #51 \u00a72.8 (tag sequences), CVE-2021-42574 (bidirectional overrides)"
+      }
+    },
+    {
+      "rule_id": "catalog_no_embedded_secrets",
+      "rule_name": "No Secrets in Catalog Text",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Catalog text contains no credential-shaped strings.",
+      "details": {
+        "strings_with_findings": 0,
+        "matched": {},
+        "basis": "OWASP MCP Top 10 (beta) MCP01:2025 Token Mismanagement & Secret Exposure; MCP 2025-11-25 \u00a7Security and Trust & Safety (Implementation Guidelines: SHOULD follow security best practices and protect data)"
+      }
+    },
+    {
+      "rule_id": "catalog_prompt_injection_phrasing",
+      "rule_name": "No Prompt-Injection Phrasing in Catalog Text",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Catalog text contains no prompt-injection phrasing.",
+      "details": {
+        "strings_with_findings": 0,
+        "matched": {},
+        "basis": "OWASP MCP Top 10 (beta) MCP03:2025 Tool Poisoning and MCP06:2025 Prompt Injection via Contextual Payloads; MCP 2025-11-25 \u00a7Security and Trust & Safety (Tool Safety: tool descriptions are untrusted)"
+      }
+    },
+    {
+      "rule_id": "catalog_exfiltration_links",
+      "rule_name": "No Exfiltration Links in Catalog Text",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Catalog text contains no script links or data-carrying URLs.",
+      "details": {
+        "strings_with_findings": 0,
+        "matched": {},
+        "basis": "OWASP MCP Top 10 (beta) MCP03:2025 Tool Poisoning and MCP06:2025 Prompt Injection via Contextual Payloads; MCP 2025-11-25 \u00a7Security and Trust & Safety (Tool Safety: tool descriptions are untrusted)"
+      }
+    },
+    {
+      "rule_id": "catalog_cross_tool_directives",
+      "rule_name": "No Directions for Other Tools in Catalog Text",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Catalog text directs no tools outside this server.",
+      "details": {
+        "strings_with_findings": 0,
+        "matched": {},
+        "basis": "OWASP MCP Top 10 (beta) MCP03:2025 Tool Poisoning; MCP Local Server Security (a poisoned tool catalog, tool shadowing); MCP 2025-11-25 \u00a7Security and Trust & Safety (Tool Safety: tool descriptions are untrusted)"
+      }
+    },
+    {
+      "rule_id": "tools_name_present_in_all",
+      "rule_name": "Tools - All tools must have a Name",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 All tools have a non-empty name.",
+      "details": {
+        "tools_with_empty_names": 0,
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (name: unique identifier)"
+      }
+    },
+    {
+      "rule_id": "tools_names_unique",
+      "rule_name": "Tools - All tool names should be unique",
+      "severity": "CRITICAL",
+      "severity_value": 5,
+      "passed": true,
+      "message": "\u2705 All tools have unique names.",
+      "details": {
+        "duplicate_names": [],
+        "name_counts": {
+          "ask_wiki_question": 1,
+          "read_wiki_contents": 1,
+          "read_wiki_structure": 1
+        },
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool Names (SHOULD be unique within a server)"
+      }
+    },
+    {
+      "rule_id": "tools_names_valid_format",
+      "rule_name": "Tools - All tool names should follow the recommended format",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 All tools have names matching the checked format.",
+      "details": {
+        "tools_with_invalid_names": 0,
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool Names (allowed charset, 1-128 length)"
+      }
+    },
+    {
+      "rule_id": "tools_title_present_in_all",
+      "rule_name": "Tools - All tools should have a display title",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 All tools have a display title.",
+      "details": {
+        "tools_without_title": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (title: display name)"
+      }
+    },
+    {
+      "rule_id": "tools_description_present_in_all",
+      "rule_name": "Tools - All tools should have a description",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 All tools have a nonblank description.",
+      "details": {
+        "tools_with_empty_descriptions": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (description)"
+      }
+    },
+    {
+      "rule_id": "tools_input_schema_valid",
+      "rule_name": "Tools - All tools must have a valid input schema",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 All tools have a valid Input Schema",
+      "details": {
+        "tools_with_invalid_input_schema": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (inputSchema MUST be a valid JSON Schema object; 2020-12 default)"
+      }
+    },
+    {
+      "rule_id": "tools_output_schema_valid",
+      "rule_name": "Tools - All tools must have a valid output schema",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 All tools have a valid Output Schema",
+      "details": {
+        "tools_with_invalid_output_schema": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (outputSchema; JSON Schema usage guidelines)"
+      }
+    },
+    {
+      "rule_id": "tools_annotations_present",
+      "rule_name": "Tools - All tools should declare behavior annotations",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": false,
+      "message": "\u274c Number of tools without behavior annotations: 3. This is an optional quality recommendation. First affected field: tool at index 0 \"/annotations\".",
+      "details": {
+        "tools_without_annotations": [
+          "ask_wiki_question",
+          "read_wiki_contents",
+          "read_wiki_structure"
+        ],
+        "issues": [
+          {
+            "entity_kind": "tool",
+            "reason": "missing_behavior_annotation",
+            "expected": "at least one behavior annotation reflecting actual effects",
+            "entity_index": 0,
+            "path": "/annotations"
+          },
+          {
+            "entity_kind": "tool",
+            "reason": "missing_behavior_annotation",
+            "expected": "at least one behavior annotation reflecting actual effects",
+            "entity_index": 1,
+            "path": "/annotations"
+          },
+          {
+            "entity_kind": "tool",
+            "reason": "missing_behavior_annotation",
+            "expected": "at least one behavior annotation reflecting actual effects",
+            "entity_index": 2,
+            "path": "/annotations"
+          }
+        ],
+        "issues_total": 3,
+        "issues_omitted": 0,
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (annotations)"
+      },
+      "suggested_fix": "Declare behavior annotations that match the tool's actual effects. Set readOnlyHint to true only if the tool cannot change state."
+    },
+    {
+      "rule_id": "tools_execution_consistent",
+      "rule_name": "Tools - Task Execution Backed by Tasks Capability",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 No tools declare task-augmented execution.",
+      "details": {
+        "task_tools": [],
+        "tasks_capability": false,
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (execution.taskSupport); Lifecycle \u00a7Capability Negotiation (tasks)"
+      }
+    },
+    {
+      "rule_id": "tools_icons_valid",
+      "rule_name": "Tools - Declared icons must be valid",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 All declared tool icons are valid.",
+      "details": {
+        "invalid_icons": [],
+        "basis": "MCP 2026-07-28 Schema Reference \u00a7Common Types (Icon); Tools \u00a7Tool (icons)"
+      }
+    },
+    {
+      "rule_id": "tools_input_properties_documented",
+      "rule_name": "Tools - Input properties should be documented",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 All statically reachable tool inputs are documented.",
+      "details": {
+        "undocumented_properties": [],
+        "basis": "MCP 2026-07-28 Tools \u00a7Tool (inputSchema; property descriptions per the spec's examples)"
+      }
+    },
+    {
+      "rule_id": "tools_output_schema_root_object",
+      "rule_name": "Tools - Output schemas must be object-rooted on this revision",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 All declared output schemas are object-rooted.",
+      "details": {
+        "tools_with_non_object_root": {},
+        "basis": "MCP 2025-11-25 Schema Reference \u00a7Tool (outputSchema \"restricted to type: object at the root level\")"
+      }
+    },
+    {
+      "rule_id": "tools_descriptions_unique",
+      "rule_name": "Tools - Each tool should have its own description",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 Every described tool has its own description.",
+      "details": {
+        "duplicate_description_groups": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7User Interaction Model (model-controlled: the model picks tools by description)"
+      }
+    },
+    {
+      "rule_id": "tools_output_properties_documented",
+      "rule_name": "Tools - Output properties should be documented",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c Number of undocumented tool output properties: 3. This is an optional quality recommendation. First affected field: tool at index 0 \"/outputSchema/properties/result/description\".",
+      "details": {
+        "undocumented_properties": [
+          {
+            "tool": "ask_wiki_question",
+            "path": "$.properties.result"
+          },
+          {
+            "tool": "read_wiki_contents",
+            "path": "$.properties.result"
+          },
+          {
+            "tool": "read_wiki_structure",
+            "path": "$.properties.result"
+          }
+        ],
+        "issues": [
+          {
+            "entity_kind": "tool",
+            "reason": "missing_property_description",
+            "expected": "a nonblank property description",
+            "entity_index": 0,
+            "path": "/outputSchema/properties/result/description"
+          },
+          {
+            "entity_kind": "tool",
+            "reason": "missing_property_description",
+            "expected": "a nonblank property description",
+            "entity_index": 1,
+            "path": "/outputSchema/properties/result/description"
+          },
+          {
+            "entity_kind": "tool",
+            "reason": "missing_property_description",
+            "expected": "a nonblank property description",
+            "entity_index": 2,
+            "path": "/outputSchema/properties/result/description"
+          }
+        ],
+        "issues_total": 3,
+        "issues_omitted": 0,
+        "basis": "MCP 2026-07-28 Tools \u00a7Tool (outputSchema; property descriptions per the spec's examples)"
+      },
+      "suggested_fix": "Add a description to each reported output property saying what the field means, not a sample value. This check covers direct properties chains only."
+    },
+    {
+      "rule_id": "tools_descriptions_informative",
+      "rule_name": "Tools - Descriptions should say more than the name",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 Every tool description says more than the tool's name.",
+      "details": {
+        "uninformative_descriptions": [],
+        "basis": "MCP 2025-11-25 Tools \u00a7Tool (description: human-readable description of functionality)"
+      }
+    },
+    {
+      "rule_id": "transport_streamable_http",
+      "rule_name": "Streamable HTTP Transport",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 Server uses the Streamable HTTP transport (current MCP standard).",
+      "details": {
+        "transport_type": "streamable-http",
+        "url": "https://mcp.deepwiki.com/mcp",
+        "basis": "MCP 2025-11-25 Transports \u00a7Streamable HTTP (replaces the deprecated HTTP+SSE transport from 2024-11-05)"
+      }
+    },
+    {
+      "rule_id": "transport_notification_accepted",
+      "rule_name": "Notification Answered With 202",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 A notification POST is answered with HTTP 202 and no body.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#sending-messages-to-the-server",
+        "http_status": 202,
+        "body_present": false,
+        "shape": "legacy-initialized",
+        "basis": "Transports \u00a7Sending Messages to the Server (2025-03-26 to 2025-11-25) and Streamable HTTP \u00a7Sending Messages (2026-07-28): an accepted notification MUST get HTTP 202 with no body, a refused one an HTTP error status"
+      }
+    },
+    {
+      "rule_id": "transport_invalid_request_rejected",
+      "rule_name": "Invalid JSON-RPC Request Rejected",
+      "severity": "MEDIUM",
+      "severity_value": 2,
+      "passed": true,
+      "message": "\u2705 A request whose method is a number is rejected (-32602; transport_invalid_request_error_code judges the code).",
+      "details": {
+        "spec": "https://www.jsonrpc.org/specification#error_object",
+        "http_status": 400,
+        "error_code": -32602,
+        "invalid_request_code": false,
+        "id_echoed_or_null": true,
+        "timed_out": false,
+        "shape": "legacy-ping",
+        "basis": "Base Protocol \u00a7Messages: all messages MUST follow JSON-RPC 2.0; JSON-RPC 2.0 \u00a75.1: a request that is not a valid Request object is answered with error -32600 (Invalid Request)"
+      }
+    },
+    {
+      "rule_id": "transport_invalid_request_error_code",
+      "rule_name": "Invalid Request Answered With -32600",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c The invalid request is refused with -32602; JSON-RPC 2.0 assigns -32600 (Invalid Request). Observed JSON-RPC error code: -32602; HTTP status: 400.",
+      "details": {
+        "spec": "https://www.jsonrpc.org/specification#error_object",
+        "http_status": 400,
+        "error_code": -32602,
+        "shape": "legacy-ping",
+        "expected": {
+          "error_code": -32600
+        },
+        "basis": "JSON-RPC 2.0 \u00a75.1: -32600 Invalid Request, the JSON sent is not a valid Request object; Base Protocol \u00a7Messages: all messages MUST follow JSON-RPC 2.0"
+      },
+      "suggested_fix": "Answer JSON that is not a valid JSON-RPC request with error -32600 (Invalid Request). Some MCP SDKs send -32700 or -32602 here; if yours does, upgrade once it is fixed or validate before dispatch."
+    },
+    {
+      "rule_id": "transport_get_stream_contract",
+      "rule_name": "GET Stream Or 405",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": true,
+      "message": "\u2705 GET on the endpoint is refused with HTTP 405.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#listening-for-messages-from-the-server",
+        "http_status": 405,
+        "content_type": "text/plain; charset=utf-8",
+        "basis": "Transports \u00a7Listening for Messages from the Server (2025-03-26 to 2025-11-25): the server MUST return Content-Type text/event-stream to a GET, or HTTP 405 Method Not Allowed"
+      }
+    },
+    {
+      "rule_id": "pagination_tools_invalid_cursor",
+      "rule_name": "Tools Invalid Pagination Cursor",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c tools/list returned a page for an invalid cursor instead of JSON-RPC -32602.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination#error-handling",
+        "response_kind": "page",
+        "error_code": null,
+        "http_status": null,
+        "expected": {
+          "error_code": -32602
+        },
+        "basis": "MCP Pagination \u00a7Error Handling (invalid cursors SHOULD return -32602 in every dated revision)"
+      },
+      "suggested_fix": "Validate pagination cursors before listing. Return JSON-RPC -32602 (Invalid params) for an invalid cursor instead of returning a page."
+    },
+    {
+      "rule_id": "pagination_resources_invalid_cursor",
+      "rule_name": "Resources Invalid Pagination Cursor",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c resources/list returned a page for an invalid cursor instead of JSON-RPC -32602.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination#error-handling",
+        "response_kind": "page",
+        "error_code": null,
+        "http_status": null,
+        "expected": {
+          "error_code": -32602
+        },
+        "basis": "MCP Pagination \u00a7Error Handling (invalid cursors SHOULD return -32602 in every dated revision)"
+      },
+      "suggested_fix": "Validate pagination cursors before listing. Return JSON-RPC -32602 (Invalid params) for an invalid cursor instead of returning a page."
+    },
+    {
+      "rule_id": "pagination_resource_templates_invalid_cursor",
+      "rule_name": "Resource Templates Invalid Pagination Cursor",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c resources/templates/list returned a page for an invalid cursor instead of JSON-RPC -32602.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination#error-handling",
+        "response_kind": "page",
+        "error_code": null,
+        "http_status": null,
+        "expected": {
+          "error_code": -32602
+        },
+        "basis": "MCP Pagination \u00a7Error Handling (invalid cursors SHOULD return -32602 in every dated revision)"
+      },
+      "suggested_fix": "Validate pagination cursors before listing. Return JSON-RPC -32602 (Invalid params) for an invalid cursor instead of returning a page."
+    },
+    {
+      "rule_id": "pagination_prompts_invalid_cursor",
+      "rule_name": "Prompts Invalid Pagination Cursor",
+      "severity": "LOW",
+      "severity_value": 1,
+      "passed": false,
+      "message": "\u274c prompts/list returned a page for an invalid cursor instead of JSON-RPC -32602.",
+      "details": {
+        "spec": "https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination#error-handling",
+        "response_kind": "page",
+        "error_code": null,
+        "http_status": null,
+        "expected": {
+          "error_code": -32602
+        },
+        "basis": "MCP Pagination \u00a7Error Handling (invalid cursors SHOULD return -32602 in every dated revision)"
+      },
+      "suggested_fix": "Validate pagination cursors before listing. Return JSON-RPC -32602 (Invalid params) for an invalid cursor instead of returning a page."
+    },
+    {
+      "rule_id": "tools_catalog_connection_independent",
+      "rule_name": "Tools Catalog Connection Independent",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Tools catalog matched on two observed connections with the same authorization.",
+      "details": {
+        "first_count": 3,
+        "second_count": 3,
+        "results_complete": true,
+        "only_first": [],
+        "only_second": [],
+        "differences_truncated": false,
+        "spec": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools#capabilities",
+        "basis": "MCP 2026-07-28 Tools \u00a7Capabilities (tool set MUST NOT vary per-connection)"
+      }
+    },
+    {
+      "rule_id": "resources_catalog_connection_independent",
+      "rule_name": "Resources Catalog Connection Independent",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Resources catalog matched on two observed connections with the same authorization.",
+      "details": {
+        "first_count": 0,
+        "second_count": 0,
+        "results_complete": true,
+        "only_first": [],
+        "only_second": [],
+        "differences_truncated": false,
+        "spec": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources#capabilities",
+        "basis": "MCP 2026-07-28 Resources \u00a7Capabilities (resource set MUST NOT vary per-connection)"
+      }
+    },
+    {
+      "rule_id": "prompts_catalog_connection_independent",
+      "rule_name": "Prompts Catalog Connection Independent",
+      "severity": "HIGH",
+      "severity_value": 3,
+      "passed": true,
+      "message": "\u2705 Prompts catalog matched on two observed connections with the same authorization.",
+      "details": {
+        "first_count": 0,
+        "second_count": 0,
+        "results_complete": true,
+        "only_first": [],
+        "only_second": [],
+        "differences_truncated": false,
+        "spec": "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts#capabilities",
+        "basis": "MCP 2026-07-28 Prompts \u00a7Capabilities (prompt set MUST NOT vary per-connection)"
+      }
+    }
+  ],
+  "skipped_rules": [
+    {
+      "rule_id": "server_instructions_tool_references",
+      "rule_name": "Server Info - Instructions reference listed tools",
+      "reason": "not-applicable",
+      "group_name": "server_info"
+    },
+    {
+      "rule_id": "auth_www_authenticate",
+      "rule_name": "Auth - WWW-Authenticate Challenge",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_protected_resource_metadata",
+      "rule_name": "Auth - Protected Resource Metadata",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_authorization_servers_https",
+      "rule_name": "Auth - Authorization Servers Present and HTTPS",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_challenge_references_metadata",
+      "rule_name": "Auth - Challenge References Resource Metadata",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_metadata_https",
+      "rule_name": "Auth - Resource Metadata Uses HTTPS",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_scopes_advertised",
+      "rule_name": "Auth - Scopes Advertised",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_server_metadata_present",
+      "rule_name": "Auth - Authorization Server Metadata Present",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_server_metadata_pkce",
+      "rule_name": "Auth - Authorization Server Advertises PKCE (S256)",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_client_registration_advertised",
+      "rule_name": "Auth - Client Registration Advertised",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_iss_parameter_supported",
+      "rule_name": "Auth - Authorization Server Identifies Itself in Responses",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_invalid_token_rejected",
+      "rule_name": "Auth - Invalid Token Rejected",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "auth_token_not_in_query",
+      "rule_name": "Auth - Token Not in URL Query",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "security_host_header_validation",
+      "rule_name": "Host Header Validated On A Local Server",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "security_local_bind_loopback",
+      "rule_name": "Local Server Bound To Loopback Only",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "skills_hidden_unicode",
+      "rule_name": "No Hidden Unicode in Skills",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "skills_no_embedded_secrets",
+      "rule_name": "No Secrets in Skills",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "skills_prompt_injection_phrasing",
+      "rule_name": "No Prompt-Injection Phrasing in Skills",
+      "reason": "not-applicable",
+      "group_name": "security"
+    },
+    {
+      "rule_id": "tools_mcp_headers_valid_names",
+      "rule_name": "Tools - MCP header names must be valid",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_mcp_headers_unique",
+      "rule_name": "Tools - MCP header names must be unique",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_mcp_headers_primitive_types",
+      "rule_name": "Tools - MCP headers must annotate supported primitive types",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_mcp_headers_statically_reachable",
+      "rule_name": "Tools - MCP header parameters must be statically reachable",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_mcp_headers_not_sensitive",
+      "rule_name": "Tools - MCP headers should not expose sensitive parameters",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_annotations_destructive_declared",
+      "rule_name": "Tools - Delete tools must not be declared read-only or non-destructive",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_annotations_read_only_declared",
+      "rule_name": "Tools - Annotated read tools should declare readOnlyHint",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_annotations_hints_consistent",
+      "rule_name": "Tools - Read-only tools should not declare destructiveHint true",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "tools_input_defaults_match_type",
+      "rule_name": "Tools - Input defaults should match their declared type",
+      "reason": "not-applicable",
+      "group_name": "tools"
+    },
+    {
+      "rule_id": "transport_session_delete",
+      "rule_name": "Session DELETE Honoured",
+      "reason": "not-applicable",
+      "group_name": "transport"
+    },
+    {
+      "rule_id": "resources_uris_valid",
+      "rule_name": "Resources - All resource URIs must be valid",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_names_present",
+      "rule_name": "Resources - All resources must have a name",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_sizes_valid",
+      "rule_name": "Resources - Declared sizes must be valid",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_mime_types_valid",
+      "rule_name": "Resources - Declared MIME types must be valid",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_annotations_valid",
+      "rule_name": "Resources - Declared annotations must be valid",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_description_present",
+      "rule_name": "Resources - All resources should have a description",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_uris_unique",
+      "rule_name": "Resources - Resource URIs must be unique",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_titles_present",
+      "rule_name": "Resources - All resources should have a display title",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resources_icons_valid",
+      "rule_name": "Resources - Declared icons must be valid",
+      "reason": "not-applicable",
+      "group_name": "resources"
+    },
+    {
+      "rule_id": "resource_templates_uri_templates_valid",
+      "rule_name": "Resource Templates - URI templates must be valid",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_unique",
+      "rule_name": "Resource Templates - URI templates must be unique",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_names_present",
+      "rule_name": "Resource Templates - All templates must have a name",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_icons_valid",
+      "rule_name": "Resource Templates - Declared icons must be valid",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_mime_types_valid",
+      "rule_name": "Resource Templates - Declared MIME types must be valid",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_annotations_valid",
+      "rule_name": "Resource Templates - Declared annotations must be valid",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_description_present",
+      "rule_name": "Resource Templates - All templates should have a description",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "resource_templates_titles_present",
+      "rule_name": "Resource Templates - All templates should have a display title",
+      "reason": "not-applicable",
+      "group_name": "resource_templates"
+    },
+    {
+      "rule_id": "prompts_argument_names_unique",
+      "rule_name": "Prompts - Argument names must be unique",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_argument_names_present",
+      "rule_name": "Prompts - All arguments must have a name",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_description_present",
+      "rule_name": "Prompts - All prompts should have a description",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_arguments_documented",
+      "rule_name": "Prompts - All prompt arguments should be documented",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_names_unique",
+      "rule_name": "Prompts - Prompt names must be unique",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_titles_present",
+      "rule_name": "Prompts - All prompts should have a display title",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "prompts_icons_valid",
+      "rule_name": "Prompts - Declared icons must be valid",
+      "reason": "not-applicable",
+      "group_name": "prompts"
+    },
+    {
+      "rule_id": "pagination_cache_scope_consistent",
+      "rule_name": "Pagination Cache Scope Consistent",
+      "reason": "not-applicable",
+      "group_name": "pagination"
+    },
+    {
+      "rule_id": "skills_list_supported",
+      "rule_name": "Skills - skills/list Answers",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_directory_read",
+      "rule_name": "Skills - Directory Read Works",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_get_supported",
+      "rule_name": "Skills - skills/get Answers",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_get_unknown_rejected",
+      "rule_name": "Skills - skills/get Refuses Unknown Skills",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_resources_capability",
+      "rule_name": "Skills - Resources Capability Declared",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_entries_well_formed",
+      "rule_name": "Skills - Listing Entries Well-Formed",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_resources_manifest",
+      "rule_name": "Skills - File Manifest Valid",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_name_matches_uri",
+      "rule_name": "Skills - Name Matches URI",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_name_valid",
+      "rule_name": "Skills - Names Valid",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_digest_integrity",
+      "rule_name": "Skills - Files Match Their Digests",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_frontmatter_matches",
+      "rule_name": "Skills - SKILL.md Frontmatter Matches Listing",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_references_resolve",
+      "rule_name": "Skills - SKILL.md References Resolve",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_within_limits",
+      "rule_name": "Skills - Within Skill Limits",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_openai_import_limits",
+      "rule_name": "Skills - Fit OpenAI Import Limits",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_skill_file_metadata",
+      "rule_name": "Skills - SKILL.md Resource Metadata",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_skill_file_length",
+      "rule_name": "Skills - SKILL.md Length",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "skills_allowed_tools_valid",
+      "rule_name": "Skills - allowed-tools Well Formed",
+      "reason": "not-applicable",
+      "group_name": "skills"
+    },
+    {
+      "rule_id": "apps_tool_ui_meta_well_formed",
+      "rule_name": "Apps - Tool UI Metadata Well-Formed",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "apps_ui_resource_uri_scheme",
+      "rule_name": "Apps - UI Resources Use ui://",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "apps_ui_resource_resolves",
+      "rule_name": "Apps - UI Resources Resolve",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "apps_ui_resource_mime_type",
+      "rule_name": "Apps - UI Resource MIME Type",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "apps_ui_resource_html_document",
+      "rule_name": "Apps - UI Resources Are HTML Documents",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "apps_tool_ui_pointer_nested",
+      "rule_name": "Apps - Current UI Pointer Key",
+      "reason": "not-applicable",
+      "group_name": "apps"
+    },
+    {
+      "rule_id": "readiness_2026_skills_list_cache_hints",
+      "rule_name": "Readiness 2026-07-28 - skills/list caching hints",
+      "reason": "not-applicable",
+      "group_name": "readiness"
+    },
+    {
+      "rule_id": "readiness_2026_missing_protocol_version_rejected",
+      "rule_name": "Readiness 2026-07-28 - missing protocol-version header rejected",
+      "reason": "not-applicable",
+      "group_name": "readiness"
+    },
+    {
+      "rule_id": "readiness_2026_no_get_stream",
+      "rule_name": "Readiness 2026-07-28 - no standalone GET stream",
+      "reason": "not-applicable",
+      "group_name": "readiness"
+    }
+  ],
+  "spec": {
+    "negotiated_version": "2025-11-25",
+    "session_protocol_version": "2025-11-25",
+    "latest_version": "2026-07-28",
+    "readiness_target": "2026-07-28",
+    "era": "dual-era",
+    "catalog_versions": {}
+  },
+  "readiness": {
+    "score": 43,
+    "max_score": 45,
+    "counted_in_main": true,
+    "results": [
+      {
+        "rule_id": "readiness_2026_server_discover",
+        "rule_name": "Readiness 2026-07-28 - server/discover",
+        "severity": "CRITICAL",
+        "severity_value": 5,
+        "passed": true,
+        "message": "\u2705 server/discover supported versions: \"2026-07-28\".",
+        "details": {
+          "sep": "SEP-2575",
+          "target_version": "2026-07-28",
+          "http_status": 200,
+          "content_type": "application/json",
+          "supported_versions": [
+            "2026-07-28"
+          ],
+          "ttl_ms": 0,
+          "cache_scope": "private",
+          "result_type": "complete"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_stateless_request",
+        "rule_name": "Readiness 2026-07-28 - stateless requests",
+        "severity": "CRITICAL",
+        "severity_value": 5,
+        "passed": true,
+        "message": "\u2705 Server accepts stateless requests (per-request _meta, no initialize handshake).",
+        "details": {
+          "sep": "SEP-2575",
+          "target_version": "2026-07-28",
+          "http_status": 200,
+          "content_type": "application/json",
+          "result_type": "complete",
+          "ttl_ms": 0,
+          "cache_scope": "private"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_meta_validation",
+        "rule_name": "Readiness 2026-07-28 - _meta validation",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Server rejects requests missing required _meta fields with -32602 and HTTP 400.",
+        "details": {
+          "sep": "SEP-2575",
+          "target_version": "2026-07-28",
+          "http_status": 400,
+          "error_code": -32602,
+          "error_message": "params._meta is missing the required envelope key(s): io.modelcontextprotocol/clientCapabilities"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_header_validation",
+        "rule_name": "Readiness 2026-07-28 - HTTP header validation",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Server rejects Mcp-Method header/body mismatches with -32020 and HTTP 400.",
+        "details": {
+          "sep": "SEP-2243",
+          "target_version": "2026-07-28",
+          "http_status": 400,
+          "error_code": -32020,
+          "error_message": "mcp-method header does not match the request body's method"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_cache_metadata",
+        "rule_name": "Readiness 2026-07-28 - caching hints",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Modern results carry valid caching hints (ttlMs >= 0, cacheScope public/private).",
+        "details": {
+          "sep": "SEP-2549",
+          "target_version": "2026-07-28",
+          "observed": {
+            "probe_discover": {
+              "http_status": 200,
+              "content_type": "application/json",
+              "supported_versions": [
+                "2026-07-28"
+              ],
+              "ttl_ms": 0,
+              "cache_scope": "private",
+              "result_type": "complete"
+            },
+            "probe_stateless_list": {
+              "http_status": 200,
+              "content_type": "application/json",
+              "result_type": "complete",
+              "ttl_ms": 0,
+              "cache_scope": "private"
+            }
+          }
+        }
+      },
+      {
+        "rule_id": "readiness_2026_unsupported_version_error",
+        "rule_name": "Readiness 2026-07-28 - unsupported-version errors",
+        "severity": "MEDIUM",
+        "severity_value": 2,
+        "passed": true,
+        "message": "\u2705 Unknown version: -32022; supported: \"2026-07-28\".",
+        "details": {
+          "sep": "SEP-2575",
+          "target_version": "2026-07-28",
+          "http_status": 400,
+          "error_code": -32022,
+          "error_message": "Unsupported protocol version",
+          "supported": [
+            "2026-07-28"
+          ],
+          "requested": "2099-01-01",
+          "data_well_formed": true
+        }
+      },
+      {
+        "rule_id": "readiness_2026_error_code_migration",
+        "rule_name": "Readiness 2026-07-28 - error-code migration",
+        "severity": "MEDIUM",
+        "severity_value": 2,
+        "passed": true,
+        "message": "\u2705 Missing resources are rejected with the standard -32602 (Invalid params).",
+        "details": {
+          "sep": "SEP-2164",
+          "target_version": "2026-07-28",
+          "http_status": 400,
+          "error_code": -32602,
+          "error_message": "Resource not found: 'resource://mcpscore/does-not-exist'",
+          "legacy_code_emitted": false
+        }
+      },
+      {
+        "rule_id": "readiness_2026_result_type",
+        "rule_name": "Readiness 2026-07-28 - resultType on results",
+        "severity": "MEDIUM",
+        "severity_value": 2,
+        "passed": true,
+        "message": "\u2705 Modern results carry resultType: \"complete\".",
+        "details": {
+          "sep": "SEP-2322",
+          "target_version": "2026-07-28",
+          "observed": {
+            "probe_discover": "complete",
+            "probe_stateless_list": "complete"
+          }
+        }
+      },
+      {
+        "rule_id": "readiness_2026_deprecated_features",
+        "rule_name": "Readiness 2026-07-28 - deprecated features",
+        "severity": "MEDIUM",
+        "severity_value": 2,
+        "passed": false,
+        "message": "\u274c Server declares features deprecated in 2026-07-28: logging (logging; SEP-2577).",
+        "details": {
+          "sep": "SEP-2577",
+          "target_version": "2026-07-28",
+          "deprecated_features_declared": [
+            "logging"
+          ],
+          "earliest_removal": "2027-07-28"
+        },
+        "suggested_fix": "Migrate logging to stderr for stdio or OpenTelemetry. Review the deprecated logging capability for the target revision; deprecation does not require immediate removal from supported legacy clients."
+      },
+      {
+        "rule_id": "readiness_2026_tool_schema_dialect",
+        "rule_name": "Readiness 2026-07-28 - tool schema dialect",
+        "severity": "LOW",
+        "severity_value": 1,
+        "passed": true,
+        "message": "\u2705 Checked default-dialect schemas passed validation; no network references were found (other declared dialects not validated).",
+        "details": {
+          "sep": "SEP-2106",
+          "target_version": "2026-07-28",
+          "offending_tools": {},
+          "offending_tool_indexes": {}
+        }
+      },
+      {
+        "rule_id": "readiness_2026_no_session_id",
+        "rule_name": "Readiness 2026-07-28 - no session IDs",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Server ignores a spurious Mcp-Session-Id and mints none of its own.",
+        "details": {
+          "sep": "SEP-2567",
+          "target_version": "2026-07-28",
+          "http_status": 200,
+          "request_served": true,
+          "response_session_id": null
+        }
+      },
+      {
+        "rule_id": "readiness_2026_removed_methods",
+        "rule_name": "Readiness 2026-07-28 - removed methods",
+        "severity": "MEDIUM",
+        "severity_value": 2,
+        "passed": true,
+        "message": "\u2705 Removed method 'ping' is rejected with -32601 and HTTP 404.",
+        "details": {
+          "sep": "SEP-2575",
+          "target_version": "2026-07-28",
+          "http_status": 404,
+          "error_code": -32601,
+          "error_message": "Method not found",
+          "method_served": false
+        }
+      },
+      {
+        "rule_id": "readiness_2026_supported_versions",
+        "rule_name": "Readiness 2026-07-28 - supported versions listed",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 server/discover names 1 supported version(s): \"2026-07-28\".",
+        "details": {
+          "sep": "SEP-2575",
+          "schema_field": "DiscoverResult.supportedVersions",
+          "target_version": "2026-07-28",
+          "http_status": 200,
+          "content_type": "application/json",
+          "supported_versions": [
+            "2026-07-28"
+          ],
+          "ttl_ms": 0,
+          "cache_scope": "private",
+          "result_type": "complete"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_unknown_method_error",
+        "rule_name": "Readiness 2026-07-28 - unknown method error",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Unknown RPC methods return JSON-RPC -32601 with HTTP 404.",
+        "details": {
+          "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#protocol-version-header",
+          "target_version": "2026-07-28",
+          "http_status": 404,
+          "error_code": -32601,
+          "error_message": "Method not found"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_response_content_type",
+        "rule_name": "Readiness 2026-07-28 - response content type",
+        "severity": "HIGH",
+        "severity_value": 3,
+        "passed": true,
+        "message": "\u2705 Successful Streamable HTTP requests return application/json or text/event-stream.",
+        "details": {
+          "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#sending-messages",
+          "target_version": "2026-07-28",
+          "observed": {
+            "probe_discover": "application/json",
+            "probe_stateless_list": "application/json"
+          }
+        }
+      },
+      {
+        "rule_id": "readiness_2026_missing_method_header_rejected",
+        "rule_name": "Readiness 2026-07-28 - missing method header rejected",
+        "severity": "LOW",
+        "severity_value": 1,
+        "passed": true,
+        "message": "\u2705 Server rejects a request missing Mcp-Method with -32020 and HTTP 400.",
+        "details": {
+          "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation",
+          "target_version": "2026-07-28",
+          "http_status": 400,
+          "error_code": -32020,
+          "error_message": "mcp-method header does not match the request body's method"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_resource_name_header_mismatch_rejected",
+        "rule_name": "Readiness 2026-07-28 - resource name-header mismatch rejected",
+        "severity": "LOW",
+        "severity_value": 1,
+        "passed": true,
+        "message": "\u2705 Server rejects a resources/read request whose Mcp-Name contradicts params.uri with -32020 and HTTP 400.",
+        "details": {
+          "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation",
+          "target_version": "2026-07-28",
+          "control_http_status": 400,
+          "control_error_code": -32602,
+          "http_status": 400,
+          "error_code": -32020,
+          "error_message": "mcp-name header does not match the request body's 'uri' parameter"
+        }
+      },
+      {
+        "rule_id": "readiness_2026_prompt_name_header_mismatch_rejected",
+        "rule_name": "Readiness 2026-07-28 - prompt name-header mismatch rejected",
+        "severity": "LOW",
+        "severity_value": 1,
+        "passed": true,
+        "message": "\u2705 Server rejects a prompts/get request whose Mcp-Name contradicts params.name with -32020 and HTTP 400.",
+        "details": {
+          "spec": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation",
+          "target_version": "2026-07-28",
+          "control_http_status": 400,
+          "control_error_code": -32602,
+          "http_status": 400,
+          "error_code": -32020,
+          "error_message": "mcp-name header does not match the request body's 'name' parameter"
+        }
+      }
+    ],
+    "assessed": 18,
+    "skipped": 3,
+    "total": 21
+  }
+}

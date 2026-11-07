@@ -1,0 +1,55 @@
+name: Report contract
+
+# The skill reads fields from `mcpscore --json`. This audits a live server with
+# the latest mcpscore from PyPI and checks those fields are still there, so an
+# engine release that changes the report fails here before users see it.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-${{ github.event_name }}-${{
+    github.event.pull_request.head.repo.full_name || github.repository }}-${{
+    github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions: {}
+
+jobs:
+  live-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
+        with:
+          python-version: "3.13"
+      - run: uv sync --all-groups
+      - run: uv run pytest -q -m live
+
+  canary:
+    # Latest validator and zizmor: new rules surface here instead of failing unrelated PRs.
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
+      - name: Validate with the latest Claude Code
+        run: make validate CLAUDE_CODE_VERSION=latest
+      - name: Audit workflows with the latest zizmor
+        run: uvx zizmor --no-progress .github/workflows/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
