@@ -56,6 +56,10 @@ puts a credential on a command line or in a file.
 The plugin sends nothing to mcpscore.dev. The CLI talks only to the server you
 audit. See [PRIVACY.md](PRIVACY.md).
 
+## Security
+
+Report vulnerabilities privately; see [SECURITY.md](SECURITY.md).
+
 ## Development
 
 ```bash
