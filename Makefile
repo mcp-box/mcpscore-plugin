@@ -47,6 +47,14 @@ workflows: ## Audit the GitHub workflows with zizmor (pinned, as CI does)
 .PHONY: all
 all: lint typecheck test check validate workflows ## Run all checks (mirrors CI)
 
+.PHONY: release-dry-run
+release-dry-run: ## Run all release checks without creating anything
+	uv run python scripts/release.py --dry-run
+
+.PHONY: release
+release: ## Cut a release: create the GitHub Release on tag mcpscore--v<version>
+	uv run python scripts/release.py
+
 .PHONY: eval
 eval: ## Run the agent eval suite: real Claude sessions on your account (costs money)
 	cd plugins/mcpscore && claude plugin eval . --scaffold --allow-tools "Bash(uvx mcpscore@latest:*)" "Bash(pipx run mcpscore:*)" Edit

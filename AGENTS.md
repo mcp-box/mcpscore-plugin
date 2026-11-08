@@ -34,5 +34,12 @@ published mcpscore CLI, plus a manifest for each agent. Public repository.
 - **Evals are a release gate, not a PR gate.** Run `make eval` before tagging a
   version and record the result in the PR. The eval sandbox may block the
   network, so graders accept an honest "the audit did not run" with no score.
-- **Versioning**: bump `version` in all three `plugin.json` files together and
-  add the `## [X.Y.Z]` section to `CHANGELOG.md`. Releases are Alex's.
+- **Versioning**: installed copies are cached by version, so a change users
+  should get needs a new version. Bump `version` in all three `plugin.json`
+  files together and move `[Unreleased]` to a `## [X.Y.Z] - <date>` section
+  with its compare link at the bottom.
+- **Releasing** (Alex's): run `make eval` in the release PR, merge, then on a
+  clean, synced `main`: `make release-dry-run`, then `make release`.
+  `scripts/release.py` checks the plugin files, the CHANGELOG section and its
+  link, that the tag is unused and that CI is green on HEAD, then creates the
+  GitHub Release on tag `mcpscore--vX.Y.Z` (Claude Code's plugin tag format).
