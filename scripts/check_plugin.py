@@ -364,6 +364,28 @@ def check_skill_names_report_fields(root: Path, fields: tuple[str, ...] = REPORT
     return [f"skills/audit/SKILL.md never mentions report field {leaf!r}" for leaf in missing]
 
 
+COMMAND_DOCS = ("plugins/mcpscore/skills/audit/SKILL.md", "plugins/mcpscore/README.md", "README.md")
+# `--stdio` hands everything after it to the server, so options must come before the target.
+OPTION_AFTER_TARGET = re.compile(r"<target>[ \t]+--[a-z]")
+# The shell expands the variable onto the command line, where the process list shows it.
+TOKEN_ON_COMMAND_LINE = re.compile(r"--token[ \t]+\"?\$")
+
+
+def check_commands(root: Path) -> list[str]:
+    """The mcpscore commands the skill and READMEs show work for every target and keep tokens off the command line."""
+    errors: list[str] = []
+    for name in COMMAND_DOCS:
+        path = root / name
+        if not path.is_file():
+            continue
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if OPTION_AFTER_TARGET.search(line):
+                errors.append(f"{name}:{number}: an option after <target> goes to the server under --stdio")
+            if TOKEN_ON_COMMAND_LINE.search(line):
+                errors.append(f"{name}:{number}: --token with a variable puts the token in the process list")
+    return errors
+
+
 def check_repo(root: Path = ROOT) -> list[str]:
     return [
         *check_manifests(root),
@@ -372,6 +394,7 @@ def check_repo(root: Path = ROOT) -> list[str]:
         *check_evals(root),
         *check_changelog(root),
         *check_skill_names_report_fields(root),
+        *check_commands(root),
     ]
 
 

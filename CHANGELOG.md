@@ -8,6 +8,25 @@ The version is the plugin's, set in every `plugin.json`.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-08
+
+### Fixed
+
+- The skill runs `mcpscore --json <target>`. With `--json` after a `--stdio`
+  target, the flag went to the server instead of mcpscore, and the agent got
+  no report.
+- The README shows the same command order.
+
+### Security
+
+- The skill no longer passes `--token "$TOKEN"`, which the shell expands onto
+  the command line where the process list shows it. It has the user export
+  `MCPSCORE_TOKEN`, which mcpscore reads from the environment, and warns
+  before an API-key `--header`, which has no environment form.
+- The skill, the READMEs and `PRIVACY.md` say the CLI also fetches the public
+  OAuth metadata of the authorization server the audited server advertises,
+  instead of saying it talks only to the audited server.
+
 ## [0.1.0] - 2026-11-07
 
 ### Added
@@ -36,5 +55,6 @@ The version is the plugin's, set in every `plugin.json`.
   server names, tool descriptions and error messages come from the audited
   server and are never followed as instructions.
 
-[Unreleased]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.0...HEAD
+[Unreleased]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.1...HEAD
+[0.1.1]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.0...mcpscore--v0.1.1
 [0.1.0]: https://github.com/mcp-box/mcpscore-plugin/releases/tag/mcpscore--v0.1.0

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -128,3 +129,36 @@ def test_manifest_version_cannot_trail_the_changelog(repo: Path) -> None:
     path = repo / "CHANGELOG.md"
     path.write_text(path.read_text(encoding="utf-8") + "\n## [9.0.0] - 2026-11-07\n", encoding="utf-8")
     assert any("older than CHANGELOG.md's latest release" in e for e in check_repo(repo))
+
+
+@pytest.mark.parametrize(
+    ("name", "line", "message"),
+    [
+        (
+            "plugins/mcpscore/skills/audit/SKILL.md",
+            "uvx mcpscore@latest <target> --json",
+            "an option after <target> goes to the server under --stdio",
+        ),
+        ("README.md", "1. Runs `mcpscore <target> --json` on a server", "an option after <target>"),
+        (
+            "plugins/mcpscore/skills/audit/SKILL.md",
+            'you pass `--token "$TOKEN"`, or a header',
+            "--token with a variable puts the token in the process list",
+        ),
+        ("plugins/mcpscore/README.md", "mcpscore https://x.example/mcp --token $TOKEN", "--token with a variable"),
+    ],
+)
+def test_commands_keep_options_before_the_target_and_tokens_off_the_command_line(
+    repo: Path, name: str, line: str, message: str
+) -> None:
+    path = repo / name
+    if not path.exists():
+        shutil.copy2(ROOT / name, path)
+    path.write_text(path.read_text(encoding="utf-8") + "\n" + line + "\n", encoding="utf-8")
+    assert any(message in error for error in check_repo(repo))
+
+
+def test_options_before_the_target_pass(repo: Path) -> None:
+    path = repo / "plugins/mcpscore/skills/audit/SKILL.md"
+    path.write_text(path.read_text(encoding="utf-8") + "\nuvx mcpscore@latest --json <target>\n", encoding="utf-8")
+    assert check_repo(repo) == []
