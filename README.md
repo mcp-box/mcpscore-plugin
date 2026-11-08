@@ -56,8 +56,8 @@ environment, so the token stays off the command line.
 ## Privacy
 
 The plugin sends nothing to mcpscore.dev. The CLI talks to the server you
-audit, and fetches the public OAuth metadata of the authorization server that
-server advertises, if any. See [PRIVACY.md](PRIVACY.md).
+audit, and fetches the public OAuth discovery documents that server points to,
+which can be on other hosts. See [PRIVACY.md](PRIVACY.md).
 
 ## Security
 

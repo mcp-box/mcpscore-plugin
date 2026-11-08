@@ -11,7 +11,8 @@ points (153/171, say) with a finding and a suggested fix for every rule the
 server fails. Each finding cites its source: the MCP spec, an RFC, or a stated
 best practice. It is deterministic, needs no API key, and sends nothing to
 mcpscore.dev. It talks to the server it audits, and fetches the public OAuth
-metadata of the authorization server that server advertises, if any.
+discovery documents that server points to (its protected-resource metadata and
+its authorization server's metadata), which can be on other hosts.
 
 ## 1. Pick the target
 

@@ -24,8 +24,8 @@ The version is the plugin's, set in every `plugin.json`.
   `MCPSCORE_TOKEN`, which mcpscore reads from the environment, and warns
   before an API-key `--header`, which has no environment form.
 - The skill, the READMEs and `PRIVACY.md` say the CLI also fetches the public
-  OAuth metadata of the authorization server the audited server advertises,
-  instead of saying it talks only to the audited server.
+  OAuth discovery documents the audited server points to, which can be on
+  other hosts, instead of saying it talks only to the audited server.
 
 ## [0.1.0] - 2026-11-07
 

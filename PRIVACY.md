@@ -10,9 +10,12 @@ When the agent follows it, it runs the open-source
   local server command you approve. It sends that server standard MCP requests
   and a few deliberately invalid ones (a foreign `Origin` header, malformed
   JSON) to check how the server handles them.
-- When the server advertises an OAuth authorization server, the CLI also
-  fetches that authorization server's public metadata, which can be on
-  another host. That request carries no credential.
+- When the server points to OAuth discovery documents, the CLI also fetches
+  them: the protected-resource metadata named in its `WWW-Authenticate`
+  challenge or at its well-known location, and the metadata of the
+  authorization server that document lists. They can be on other hosts. These
+  requests carry no credential, and the CLI doesn't send them to loopback or
+  private addresses unless the audited server is on one.
 - The CLI sends nothing to mcpscore.dev and has no telemetry.
 - `uvx` or `pipx` downloads the CLI from PyPI.
 - Credentials you supply (`MCPSCORE_TOKEN`, `--token`, `--header`, `--oauth`)

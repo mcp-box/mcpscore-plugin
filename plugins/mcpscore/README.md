@@ -9,7 +9,7 @@ re-audits to show the score before and after.
 
 Requires [uv](https://docs.astral.sh/uv/) (`uvx mcpscore`) or pipx on your
 `PATH`. Nothing is sent to mcpscore.dev: the CLI talks to the server you audit
-and to the authorization server it advertises, if any.
+and fetches the public OAuth discovery documents it points to.
 
 Install in Claude Code:
 
