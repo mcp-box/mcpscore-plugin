@@ -368,7 +368,7 @@ COMMAND_DOCS = ("plugins/mcpscore/skills/audit/SKILL.md", "plugins/mcpscore/READ
 # `--stdio` hands everything after it to the server, so options must come before the target.
 OPTION_AFTER_TARGET = re.compile(r"<target>[ \t]+--[a-z]")
 # The shell expands the variable onto the command line, where the process list shows it.
-TOKEN_ON_COMMAND_LINE = re.compile(r"--token[ \t]+\"?\$")
+TOKEN_ON_COMMAND_LINE = re.compile(r"--token(?:[ \t]+|=)\"?\$")
 
 
 def check_commands(root: Path) -> list[str]:

@@ -146,6 +146,8 @@ def test_manifest_version_cannot_trail_the_changelog(repo: Path) -> None:
             "--token with a variable puts the token in the process list",
         ),
         ("plugins/mcpscore/README.md", "mcpscore https://x.example/mcp --token $TOKEN", "--token with a variable"),
+        ("README.md", 'mcpscore --token="$TOKEN" https://x.example/mcp', "--token with a variable"),
+        ("README.md", "mcpscore --token=${TOKEN} https://x.example/mcp", "--token with a variable"),
     ],
 )
 def test_commands_keep_options_before_the_target_and_tokens_off_the_command_line(
@@ -160,5 +162,6 @@ def test_commands_keep_options_before_the_target_and_tokens_off_the_command_line
 
 def test_options_before_the_target_pass(repo: Path) -> None:
     path = repo / "plugins/mcpscore/skills/audit/SKILL.md"
-    path.write_text(path.read_text(encoding="utf-8") + "\nuvx mcpscore@latest --json <target>\n", encoding="utf-8")
+    safe = "\nuvx mcpscore@latest --json <target>\nexport MCPSCORE_TOKEN; mcpscore --token-file x <target>\n"
+    path.write_text(path.read_text(encoding="utf-8") + safe, encoding="utf-8")
     assert check_repo(repo) == []
