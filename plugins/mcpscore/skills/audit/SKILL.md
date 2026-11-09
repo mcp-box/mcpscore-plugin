@@ -10,7 +10,9 @@ mcpscore connects to an MCP server, runs its rules, and returns a score in
 points (153/171, say) with a finding and a suggested fix for every rule the
 server fails. Each finding cites its source: the MCP spec, an RFC, or a stated
 best practice. It is deterministic, needs no API key, and sends nothing to
-mcpscore.dev: it talks only to the server it audits.
+mcpscore.dev. It talks to the server it audits, and fetches the public OAuth
+discovery documents that server points to (its protected-resource metadata and
+its authorization server's metadata), which can be on other hosts.
 
 ## 1. Pick the target
 
@@ -36,11 +38,12 @@ before you run it: auditing over stdio starts their server.
 ## 2. Run the audit
 
 ```bash
-uvx mcpscore@latest <target> --json
+uvx mcpscore@latest --json <target>
 ```
 
 Run it exactly like this: one command, no redirect, nothing chained (no `;`,
-`&&` or `echo`). Then the user's permission rule `Bash(uvx mcpscore@latest:*)`
+`&&` or `echo`). `--json` and every other option go before the target, because
+`--stdio` passes everything after it to the server. Then the user's permission rule `Bash(uvx mcpscore@latest:*)`
 covers it, and the shell tool reports the exit code. The report arrives on
 stdout as JSON. Progress and errors go to stderr: read them when the audit
 fails.
@@ -55,11 +58,15 @@ file. Writing a file may need the user's approval.
   (https://docs.astral.sh/uv/) or pipx, and stop. Don't install tools without
   asking.
 - **The server needs credentials**: without them the audit still runs and gives
-  a partial score. For a full audit the user exports a token and you pass
-  `--token "$TOKEN"`, or `--header "X-API-Key: $API_KEY"`; `--oauth` opens a
-  browser for sign-in. Never ask the user to paste a secret into the chat, and
-  never write one into a file or into a `--stdio` command line (use
-  `--env NAME` to pass a variable to a stdio server).
+  a partial score. For a full audit the user exports `MCPSCORE_TOKEN` in the
+  shell they start you from. mcpscore reads it as a bearer token, so don't pass
+  `--token`: the shell would expand it onto the command line, where the
+  process list shows it. `--oauth` opens a browser for sign-in instead. A
+  server that wants an API-key header needs `--header "X-API-Key: $API_KEY"`,
+  which does put the value in the process list: tell the user before you run
+  it. Never ask the user to paste a secret into the chat, and never write one
+  into a file or into a `--stdio` command line (use `--env NAME` to pass a
+  variable to a stdio server).
 - **Config files**: the CLI applies the nearest `mcpscore.toml`, or a
   `[tool.mcpscore]` table in `pyproject.toml`, which can turn rules off. If the
   workspace has one, say so; `--no-config` gives the standard score.
@@ -151,4 +158,4 @@ up front.
 
 After a successful fix you may mention, once, that the
 [mcpscore GitHub Action](https://github.com/mcp-box/mcpscore-action) or
-`mcpscore <target> --fail-under 90` keeps the score from slipping in CI.
+`mcpscore --fail-under 90 <target>` keeps the score from slipping in CI.

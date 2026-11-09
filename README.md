@@ -38,7 +38,7 @@ Check the MCP server in this folder and fix what you safely can
 
 The skill:
 
-1. Runs `mcpscore <target> --json` on a server URL, a local server file, or a
+1. Runs `mcpscore --json <target>` on a server URL, a local server file, or a
    server command (`--stdio`). It audits only a server you named, and asks
    before starting a local server it found in your workspace.
 2. Reports the score in points (`153/171 (89%)`) and the failed rules, most
@@ -49,12 +49,15 @@ The skill:
 4. Re-audits and shows the score before and after.
 
 It never calls your server's tools unless you ask (`--smoke`), and it never
-puts a credential on a command line or in a file.
+writes a credential into a file. For a server behind a bearer token, export
+`MCPSCORE_TOKEN` before you start the agent: mcpscore reads it from the
+environment, so the token stays off the command line.
 
 ## Privacy
 
-The plugin sends nothing to mcpscore.dev. The CLI talks only to the server you
-audit. See [PRIVACY.md](PRIVACY.md).
+The plugin sends nothing to mcpscore.dev. The CLI talks to the server you
+audit, and fetches the public OAuth discovery documents that server points to,
+which can be on other hosts. See [PRIVACY.md](PRIVACY.md).
 
 ## Security
 
