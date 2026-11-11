@@ -43,8 +43,9 @@ uvx mcpscore@latest --json <target>
 
 Run it exactly like this: one command, no redirect, nothing chained (no `;`,
 `&&` or `echo`). `--json` and every other option go before the target, because
-`--stdio` passes everything after it to the server. Then the user's permission rule `Bash(uvx mcpscore@latest:*)`
-covers it, and the shell tool reports the exit code. The report arrives on
+`--stdio` passes everything after it to the server. Keep the command identical
+from run to run: a user may have allowed that exact command, and any change to
+it asks them again. The shell tool reports the exit code. The report arrives on
 stdout as JSON. Progress and errors go to stderr: read them when the audit
 fails.
 
