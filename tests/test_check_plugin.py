@@ -152,6 +152,18 @@ def test_manifest_version_cannot_trail_the_changelog(repo: Path) -> None:
         ("README.md", '"Bash(uvx mcpscore@latest --json https://:*)"', "a wildcard permission rule for mcpscore"),
         ("plugins/mcpscore/README.md", "allow `Bash(pipx run mcpscore *)`", "a wildcard permission rule for mcpscore"),
         (
+            "README.md",
+            '"Bash(uvx mcpscore@latest * https://your-server.example/mcp)"',
+            "a wildcard permission rule for mcpscore",
+        ),
+        (
+            "README.md",
+            '"Bash(uvx mcpscore@latest --json https://*.example/mcp)"',
+            "a wildcard permission rule for mcpscore",
+        ),
+        ("README.md", '"Bash(* mcpscore --json https://your-server.example/mcp)"', "a wildcard permission rule"),
+        ("SECURITY.md", "allow `Bash(uvx mcpscore@latest:*)`", "a wildcard permission rule for mcpscore"),
+        (
             "plugins/mcpscore/skills/audit/SKILL.md",
             "the rule `Bash(uvx mcpscore@latest:*)` covers it",
             "a wildcard permission rule for mcpscore",
