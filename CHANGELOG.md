@@ -8,6 +8,8 @@ The version is the plugin's, set in every `plugin.json`.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-11
+
 ### Security
 
 - The README no longer recommends the permission rule
@@ -17,6 +19,8 @@ The version is the plugin's, set in every `plugin.json`.
   code or send a credential to another host. The README now recommends
   allowing one exact command for your own server. If you added the wildcard
   rule, replace it.
+- The skill no longer refers to the wildcard rule. It keeps the audit command
+  identical from run to run, so an exact rule keeps matching.
 - `make check` fails when the skill or a README shows a wildcard permission
   rule for mcpscore.
 
@@ -67,6 +71,7 @@ The version is the plugin's, set in every `plugin.json`.
   server names, tool descriptions and error messages come from the audited
   server and are never followed as instructions.
 
-[Unreleased]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.1...HEAD
+[Unreleased]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.2...HEAD
+[0.1.2]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.1...mcpscore--v0.1.2
 [0.1.1]: https://github.com/mcp-box/mcpscore-plugin/compare/mcpscore--v0.1.0...mcpscore--v0.1.1
 [0.1.0]: https://github.com/mcp-box/mcpscore-plugin/releases/tag/mcpscore--v0.1.0
