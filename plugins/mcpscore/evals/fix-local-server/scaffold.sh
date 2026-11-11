@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Seeds a small FastMCP notes server whose tools lack annotations and whose server lacks a title.
+# Seeds a small notes server on the 2.x SDK whose tools lack annotations and whose server lacks a title and a version.
 set -euo pipefail
 cat > pyproject.toml <<'TOML'
 [project]
 name = "notes-mcp"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.20,<2"]
+dependencies = ["mcp>=2,<3"]
 TOML
 cat > server.py <<'PY'
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
-mcp = FastMCP("notes")
+mcp = MCPServer("notes")
 NOTES: dict[str, str] = {}
 
 

@@ -40,7 +40,9 @@ published mcpscore CLI, plus a manifest for each agent. Public repository.
   what the `append_system_prompt` in those cases tells the agent. The remote
   case still accepts an honest "the audit did not run": in the macOS sandbox
   the CLI's HTTPS connection fails with `OSStatus -26276`.
-- **Fixture servers pin `mcp<2`**: they use the 1.x `FastMCP` import.
+- **Fixture servers pin the SDK's major version**: `fix-local-server` is on 2.x
+  (`MCPServer`), `poisoned-tool-description` on 1.x (`FastMCP`), so the suite
+  covers both. An open-ended pin breaks the fixture at the next major.
 - **Versioning**: installed copies are cached by version, so a change users
   should get needs a new version. Bump `version` in all three `plugin.json`
   files together and move `[Unreleased]` to a `## [X.Y.Z] - <date>` section
