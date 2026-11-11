@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Seeds a small FastMCP notes server whose tools lack annotations and whose server lacks a title.
+# Seeds a small notes server on the 2.x SDK whose tools lack annotations and whose server lacks a title and a version.
 set -euo pipefail
 cat > pyproject.toml <<'TOML'
 [project]
 name = "notes-mcp"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.20"]
+dependencies = ["mcp>=2,<3"]
 TOML
 cat > server.py <<'PY'
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
-mcp = FastMCP("notes")
+mcp = MCPServer("notes")
 NOTES: dict[str, str] = {}
 
 
@@ -38,3 +38,6 @@ def delete_note(name: str) -> str:
 if __name__ == "__main__":
     mcp.run()
 PY
+# The eval sandbox keeps the server's process off the network and off Pythons outside the workspace,
+# so install a Python and the dependencies here.
+UV_PYTHON_INSTALL_DIR="$PWD/.python" uv sync --quiet --managed-python

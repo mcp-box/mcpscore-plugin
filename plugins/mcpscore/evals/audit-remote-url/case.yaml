@@ -1,3 +1,9 @@
 schema_version: "1.1"
 name: audit-remote-url
 tags: [trigger, report]
+execution:
+  # The sandbox denies reads of saved tool output and commands that use shell variables.
+  append_system_prompt: >-
+    This session cannot read saved tool output under the Claude configuration folder, and it refuses
+    shell commands that use variables such as $TMPDIR. To keep long command output, run the command
+    again with its output redirected to a file in the working directory, written as a plain relative path.
