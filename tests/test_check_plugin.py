@@ -114,6 +114,11 @@ def test_eval_case_needs_graders(repo: Path) -> None:
     assert "plugins/mcpscore/evals/use-not-build has no graders" in check_repo(repo)
 
 
+def test_eval_results_folder_is_not_a_case(repo: Path) -> None:
+    (repo / PLUGIN / "evals/results/2026-11-11T11-03-58-269Z").mkdir(parents=True)
+    assert check_repo(repo) == []
+
+
 def test_eval_scaffold_must_be_executable(repo: Path) -> None:
     (repo / PLUGIN / "evals/not-mcp-code/scaffold.sh").chmod(0o644)
     assert "plugins/mcpscore/evals/not-mcp-code/scaffold.sh is not executable" in check_repo(repo)

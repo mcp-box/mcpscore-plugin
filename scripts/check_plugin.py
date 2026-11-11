@@ -31,6 +31,8 @@ SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 SKILL_NAME = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 SKILL_DESCRIPTION_MAX = 1024
 ICON_MIN_PX, ICON_MAX_PX = 512, 2048
+# Where `claude plugin eval` writes its reports; local output, not an eval case.
+EVAL_RESULTS_DIR = "results"
 
 # Report fields the audit skill reads. `[]` means "in at least one element of the list".
 REPORT_FIELDS = (
@@ -212,7 +214,8 @@ def check_skills(root: Path) -> list[str]:
 def check_evals(root: Path) -> list[str]:
     errors: list[str] = []
     evals_root = plugin_dir(root) / "evals"
-    cases = sorted(path for path in evals_root.iterdir() if path.is_dir()) if evals_root.is_dir() else []
+    folders = sorted(path for path in evals_root.iterdir() if path.is_dir()) if evals_root.is_dir() else []
+    cases = [path for path in folders if path.name != EVAL_RESULTS_DIR]
     if not cases:
         return [f"no eval cases under {evals_root.relative_to(root)}"]
     for case in cases:
