@@ -156,3 +156,6 @@ pyrightconfig.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Local output of `make eval`
+plugins/mcpscore/evals/results/
