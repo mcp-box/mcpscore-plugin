@@ -2,10 +2,8 @@
 type: llm
 weight: 2
 ---
-The workspace holds a FastMCP notes server (`server.py`). The eval sandbox may stop the mcpscore CLI from running.
+The workspace holds a FastMCP notes server (`server.py`). The user asked for an mcpscore audit and for safe fixes.
 
-Pass only if the final response does ONE of these:
-- (audit ran) shows the score before and after the fixes as points with percentages, and the after score is not lower;
-- (audit did not run) says so plainly, states no score, and says the fixes are unverified by a re-audit.
+Pass only if the final response shows the mcpscore score before and after the fixes, each as points (`score/max_score`) with a percentage, the after score is not lower, and it lists what it changed in `server.py`.
 
-In both cases it lists what it changed in `server.py`.
+Fail if it says the audit did not run, or gives no score from an audit.

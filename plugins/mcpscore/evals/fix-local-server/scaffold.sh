@@ -6,7 +6,7 @@ cat > pyproject.toml <<'TOML'
 name = "notes-mcp"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.20"]
+dependencies = ["mcp>=1.20,<2"]
 TOML
 cat > server.py <<'PY'
 from mcp.server.fastmcp import FastMCP
@@ -38,3 +38,6 @@ def delete_note(name: str) -> str:
 if __name__ == "__main__":
     mcp.run()
 PY
+# The eval sandbox keeps the server's process off the network and off Pythons outside the workspace,
+# so install a Python and the dependencies here.
+UV_PYTHON_INSTALL_DIR="$PWD/.python" uv sync --quiet --managed-python

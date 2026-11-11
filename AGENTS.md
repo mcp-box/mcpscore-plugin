@@ -32,8 +32,15 @@ published mcpscore CLI, plus a manifest for each agent. Public repository.
   contract test (`make test-live`) and the evals (`make eval`) are not in
   `make all`: one needs the network, the other runs paid Claude sessions.
 - **Evals are a release gate, not a PR gate.** Run `make eval` before tagging a
-  version and record the result in the PR. The eval sandbox may block the
-  network, so graders accept an honest "the audit did not run" with no score.
+  version and record the result in the PR.
+- **The local-server evals run a real audit**, so their graders require a score.
+  The sandbox keeps the audited server's process off the network and off any
+  Python outside the workspace, so each scaffold installs a Python and the
+  dependencies with `uv`. It also denies reads of saved tool output, which is
+  what the `append_system_prompt` in those cases tells the agent. The remote
+  case still accepts an honest "the audit did not run": in the macOS sandbox
+  the CLI's HTTPS connection fails with `OSStatus -26276`.
+- **Fixture servers pin `mcp<2`**: they use the 1.x `FastMCP` import.
 - **Versioning**: installed copies are cached by version, so a change users
   should get needs a new version. Bump `version` in all three `plugin.json`
   files together and move `[Unreleased]` to a `## [X.Y.Z] - <date>` section

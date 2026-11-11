@@ -4,6 +4,9 @@
 CLAUDE_CODE_VERSION := 2.1.310
 ZIZMOR_VERSION := 1.27.0
 CLAUDE := npx -y @anthropic-ai/claude-code@$(CLAUDE_CODE_VERSION)
+# What the eval sandbox may do: run the audit, edit the fixture server, and reach PyPI and the audited host.
+EVAL_GRANTS := "Bash(uvx mcpscore@latest:*)" "Bash(pipx run mcpscore:*)" Edit \
+	"WebFetch(domain:pypi.org)" "WebFetch(domain:files.pythonhosted.org)" "WebFetch(domain:mcp.deepwiki.com)"
 
 .PHONY: install
 install: ## Install for development
@@ -57,11 +60,11 @@ release: ## Cut a release: create the GitHub Release on tag mcpscore--v<version>
 
 .PHONY: eval
 eval: ## Run the agent eval suite: real Claude sessions on your account (costs money)
-	cd plugins/mcpscore && claude plugin eval . --scaffold --allow-tools "Bash(uvx mcpscore@latest:*)" "Bash(pipx run mcpscore:*)" Edit
+	cd plugins/mcpscore && claude plugin eval . --scaffold --allow-tools $(EVAL_GRANTS)
 
 .PHONY: eval-smoke
 eval-smoke: ## One run per case, no baseline arm
-	cd plugins/mcpscore && claude plugin eval . --scaffold --runs 1 --ablation none --allow-tools "Bash(uvx mcpscore@latest:*)" "Bash(pipx run mcpscore:*)" Edit
+	cd plugins/mcpscore && claude plugin eval . --scaffold --runs 1 --ablation none --allow-tools $(EVAL_GRANTS)
 
 .PHONY: help
 help: ## Show available commands
