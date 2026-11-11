@@ -148,6 +148,14 @@ def test_manifest_version_cannot_trail_the_changelog(repo: Path) -> None:
         ("plugins/mcpscore/README.md", "mcpscore https://x.example/mcp --token $TOKEN", "--token with a variable"),
         ("README.md", 'mcpscore --token="$TOKEN" https://x.example/mcp', "--token with a variable"),
         ("README.md", "mcpscore --token=${TOKEN} https://x.example/mcp", "--token with a variable"),
+        ("README.md", '"Bash(uvx mcpscore@latest:*)"', "a wildcard permission rule for mcpscore"),
+        ("README.md", '"Bash(uvx mcpscore@latest --json https://:*)"', "a wildcard permission rule for mcpscore"),
+        ("plugins/mcpscore/README.md", "allow `Bash(pipx run mcpscore *)`", "a wildcard permission rule for mcpscore"),
+        (
+            "plugins/mcpscore/skills/audit/SKILL.md",
+            "the rule `Bash(uvx mcpscore@latest:*)` covers it",
+            "a wildcard permission rule for mcpscore",
+        ),
     ],
 )
 def test_commands_keep_options_before_the_target_and_tokens_off_the_command_line(
@@ -162,6 +170,9 @@ def test_commands_keep_options_before_the_target_and_tokens_off_the_command_line
 
 def test_options_before_the_target_pass(repo: Path) -> None:
     path = repo / "plugins/mcpscore/skills/audit/SKILL.md"
-    safe = "\nuvx mcpscore@latest --json <target>\nexport MCPSCORE_TOKEN; mcpscore --token-file x <target>\n"
+    safe = (
+        "\nuvx mcpscore@latest --json <target>\nexport MCPSCORE_TOKEN; mcpscore --token-file x <target>\n"
+        '"Bash(uvx mcpscore@latest --json https://your-server.example/mcp)"\n'
+    )
     path.write_text(path.read_text(encoding="utf-8") + safe, encoding="utf-8")
     assert check_repo(repo) == []

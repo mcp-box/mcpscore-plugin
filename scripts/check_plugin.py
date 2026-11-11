@@ -369,10 +369,12 @@ COMMAND_DOCS = ("plugins/mcpscore/skills/audit/SKILL.md", "plugins/mcpscore/READ
 OPTION_AFTER_TARGET = re.compile(r"<target>[ \t]+--[a-z]")
 # The shell expands the variable onto the command line, where the process list shows it.
 TOKEN_ON_COMMAND_LINE = re.compile(r"--token(?:[ \t]+|=)\"?\$")
+# A wildcard rule also allows `--stdio <any command>` and `--token-file <any file>` without a prompt.
+WILDCARD_PERMISSION_RULE = re.compile(r"Bash\([^)\n]*mcpscore[^)\n]*\*\)")
 
 
 def check_commands(root: Path) -> list[str]:
-    """The mcpscore commands the skill and READMEs show work for every target and keep tokens off the command line."""
+    """The commands and permission rules the skill and READMEs show are safe to copy."""
     errors: list[str] = []
     for name in COMMAND_DOCS:
         path = root / name
@@ -383,6 +385,8 @@ def check_commands(root: Path) -> list[str]:
                 errors.append(f"{name}:{number}: an option after <target> goes to the server under --stdio")
             if TOKEN_ON_COMMAND_LINE.search(line):
                 errors.append(f"{name}:{number}: --token with a variable puts the token in the process list")
+            if WILDCARD_PERMISSION_RULE.search(line):
+                errors.append(f"{name}:{number}: a wildcard permission rule for mcpscore allows any command")
     return errors
 
 

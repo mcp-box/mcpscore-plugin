@@ -8,6 +8,18 @@ The version is the plugin's, set in every `plugin.json`.
 
 ## [Unreleased]
 
+### Security
+
+- The README no longer recommends the permission rule
+  `Bash(uvx mcpscore@latest:*)`. That rule also allowed `--stdio <any
+  command>`, `--token-file <any file>` and `--smoke --call-all` without a
+  prompt, so text from an audited server that steered the agent could run
+  code or send a credential to another host. The README now recommends
+  allowing one exact command for your own server. If you added the wildcard
+  rule, replace it.
+- `make check` fails when the skill or a README shows a wildcard permission
+  rule for mcpscore.
+
 ## [0.1.1] - 2026-11-08
 
 ### Fixed

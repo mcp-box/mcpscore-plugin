@@ -21,12 +21,20 @@ show the score before and after.
 The skill runs the mcpscore CLI with [uv](https://docs.astral.sh/uv/)
 (`uvx mcpscore`), so uv must be on your `PATH`. pipx works too.
 
-To let the agent run audits without asking each time, allow the command. In
-Claude Code, add this to `permissions.allow` in your settings:
+The agent asks before each audit. To let it re-audit the server you're
+building without asking, allow that one exact command. In Claude Code, add it
+to `permissions.allow` in your settings, with your own server in place of the
+example:
 
 ```json
-"Bash(uvx mcpscore@latest:*)"
+"Bash(uvx mcpscore@latest --json https://your-server.example/mcp)"
 ```
+
+Don't end the rule with a wildcard (`:*` or ` *`). mcpscore can start any
+command (`--stdio`), read a token from any file (`--token-file`) and call a
+server's tools (`--smoke`), so a wildcard rule lets anything that steers the
+agent, such as text from an audited server, do all of that without a prompt.
+With the exact rule, every other target and every extra option still asks.
 
 ## Use
 
